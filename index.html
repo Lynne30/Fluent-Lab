@@ -1,0 +1,2554 @@
+<title>Fluent Lab — studio d'anglais parlé</title>
+<style>
+  :root{
+    --paper:#F4EEE2; --paper-2:#EAE2D0; --card:#FBF7EE; --card-2:#F1E9D9;
+    --ink:#241E18; --ink-soft:#7A6E5F; --line:#DBCFB9;
+    --accent:#E4552A; --accent-press:#C8431E; --accent-soft:#F7DCcf;
+    --teal:#1C8A73; --teal-soft:#D3EBE2;
+    --gold:#D99A20; --danger:#BE3A25; --danger-soft:#F3D9D2;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono: ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 10px 28px -18px rgba(36,30,24,.5);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#171310; --paper-2:#211A14; --card:#1F1811; --card-2:#26201A;
+      --ink:#F1E7D6; --ink-soft:#A2937F; --line:#362B21;
+      --accent:#F2673D; --accent-press:#D9502A; --accent-soft:#3a241a;
+      --teal:#2DAE90; --teal-soft:#16332b;
+      --gold:#E5AE3E; --danger:#E06450; --danger-soft:#3a221c;
+      --shadow: 0 1px 0 rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F4EEE2; --paper-2:#EAE2D0; --card:#FBF7EE; --card-2:#F1E9D9;
+    --ink:#241E18; --ink-soft:#7A6E5F; --line:#DBCFB9;
+    --accent:#E4552A; --accent-press:#C8431E; --accent-soft:#F7DCcf;
+    --teal:#1C8A73; --teal-soft:#D3EBE2; --gold:#D99A20;
+    --danger:#BE3A25; --danger-soft:#F3D9D2;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 10px 28px -18px rgba(36,30,24,.5);
+  }
+  :root[data-theme="dark"]{
+    --paper:#171310; --paper-2:#211A14; --card:#1F1811; --card-2:#26201A;
+    --ink:#F1E7D6; --ink-soft:#A2937F; --line:#362B21;
+    --accent:#F2673D; --accent-press:#D9502A; --accent-soft:#3a241a;
+    --teal:#2DAE90; --teal-soft:#16332b; --gold:#E5AE3E;
+    --danger:#E06450; --danger-soft:#3a221c;
+    --shadow: 0 1px 0 rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); line-height:1.55; -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% -10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 40%);
+  }
+  button{font-family:inherit}
+  ::selection{background:var(--accent); color:#fff}
+  h1,h2,h3{text-wrap:balance; margin:0}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .eyebrow{font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); font-weight:700; font-family:var(--mono)}
+
+  /* ---------- Top bar ---------- */
+  header.top{
+    position:sticky; top:0; z-index:50; background:color-mix(in srgb,var(--paper) 86%, transparent);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+  }
+  .top-inner{max-width:1020px; margin:0 auto; padding:12px 18px; display:flex; align-items:center; gap:14px}
+  .brand{display:flex; align-items:center; gap:11px; margin-right:auto}
+  .rec-dot{width:13px; height:13px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%, transparent); animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @media (prefers-reduced-motion:reduce){.rec-dot{animation:none}}
+  .brand b{font-size:1.12rem; letter-spacing:-.02em}
+  .brand span{font-family:var(--mono); font-size:.62rem; letter-spacing:.22em; color:var(--ink-soft); display:block; margin-top:-2px}
+  .streak{display:flex; align-items:center; gap:6px; font-family:var(--mono); font-weight:700; font-size:.85rem;
+    background:var(--card); border:1px solid var(--line); padding:6px 11px; border-radius:999px}
+  .prof-btn{display:flex; align-items:center; gap:8px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+    border-radius:999px; padding:4px 13px 4px 5px; cursor:pointer; font-weight:600; font-size:.85rem; max-width:180px}
+  .prof-btn:hover{border-color:var(--accent)}
+  .prof-btn #profAvatar{width:27px; height:27px; border-radius:50%; display:grid; place-items:center;
+    background:var(--pcolor,var(--accent)); font-size:.95rem; flex:0 0 auto}
+  .prof-btn #profName{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:grid; place-items:center; z-index:200; padding:20px; animation:fade .2s ease both}
+  .modal-overlay.gate{background:rgba(12,9,6,.74); backdrop-filter:blur(4px)}
+  .modal{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); width:min(440px,100%); max-height:85vh; overflow:auto; padding:22px}
+  .prof-list{display:flex; flex-direction:column; gap:8px}
+  .prof-row{display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--card-2)}
+  .prof-row.active{border-color:var(--accent)}
+  .prof-ava{width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; font-size:1.2rem; color:#fff; flex:0 0 auto}
+  .prof-ava:hover{filter:brightness(1.08)}
+  .prof-name-input{width:100%; border:none; background:transparent; color:var(--ink); font-weight:650; font-size:.95rem; padding:2px 0; border-bottom:1px solid transparent}
+  .prof-name-input:focus{outline:none; border-bottom-color:var(--accent)}
+  .txt{flex:1; border:1px solid var(--line); background:var(--card-2); color:var(--ink); border-radius:10px; padding:9px 12px; font-size:.9rem; font-family:inherit}
+  .txt:focus{outline:none; border-color:var(--accent)}
+  @media(max-width:560px){ .prof-btn #profName{display:none} }
+  .icon-btn{width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--card);
+    color:var(--ink); cursor:pointer; font-size:1rem; display:grid; place-items:center}
+  .icon-btn:hover{border-color:var(--accent)}
+
+  /* ---------- Nav ---------- */
+  nav.tabs{max-width:1020px; margin:0 auto; padding:10px 18px 0; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto; border:1px solid var(--line); background:var(--card); color:var(--ink-soft);
+    padding:8px 15px; border-radius:999px; cursor:pointer; font-size:.86rem; font-weight:600; white-space:nowrap; display:flex; gap:7px; align-items:center}
+  .tab:hover{color:var(--ink); border-color:var(--accent)}
+  .tab[aria-selected="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+  .tab .ico{font-size:.95rem}
+
+  main{max-width:1020px; margin:0 auto; padding:24px 18px 90px}
+  .view{display:none; animation:fade .35s ease both}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+
+  /* ---------- Cards & shared ---------- */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+  .grid{display:grid; gap:16px}
+  .btn{border:1px solid var(--ink); background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:10px;
+    font-weight:650; cursor:pointer; font-size:.9rem; transition:transform .08s}
+  .btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--accent)}
+  .btn.accent{background:var(--accent); border-color:var(--accent); color:#fff}
+  .btn.accent:hover{background:var(--accent-press)}
+  .btn.small{padding:7px 12px; font-size:.82rem}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  :focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+  .speak-btn{border:1px solid var(--teal); color:var(--teal); background:var(--teal-soft); border-radius:999px;
+    padding:5px 12px; cursor:pointer; font-weight:650; font-size:.82rem; display:inline-flex; gap:6px; align-items:center}
+  .speak-btn:hover{background:var(--teal); color:#fff}
+
+  /* ---------- Dashboard ---------- */
+  .hero{padding:26px 26px 24px; position:relative; overflow:hidden}
+  .hero h1{font-size:clamp(1.7rem,4.5vw,2.5rem); letter-spacing:-.03em; line-height:1.05}
+  .hero p.lead{color:var(--ink-soft); margin:10px 0 0; max-width:52ch}
+  .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:22px}
+  .stat{background:var(--card-2); border:1px solid var(--line); border-radius:12px; padding:13px 15px}
+  .stat .n{font-family:var(--mono); font-size:1.7rem; font-weight:700; line-height:1; letter-spacing:-.02em}
+  .stat .l{font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; margin-top:6px}
+  .modules{display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:14px; margin-top:18px}
+  .mod{padding:18px; cursor:pointer; text-align:left; border:1px solid var(--line); background:var(--card); border-radius:var(--radius); transition:transform .1s, border-color .1s}
+  .mod:hover{transform:translateY(-3px); border-color:var(--accent)}
+  .mod .ic{font-size:1.5rem} .mod h3{font-size:1.05rem; margin:9px 0 4px; letter-spacing:-.01em}
+  .mod p{margin:0; font-size:.83rem; color:var(--ink-soft)}
+  .phrase{margin-top:16px; padding:18px 20px; border-left:4px solid var(--accent); background:var(--card-2); border-radius:0 12px 12px 0}
+  .phrase .en{font-size:1.15rem; font-weight:650} .phrase .fr{color:var(--ink-soft); font-size:.9rem; margin-top:3px}
+
+  .section-head{display:flex; align-items:end; justify-content:space-between; gap:12px; margin:4px 0 16px; flex-wrap:wrap}
+  .section-head h2{font-size:1.5rem; letter-spacing:-.02em}
+  .section-head p{margin:4px 0 0; color:var(--ink-soft); font-size:.9rem}
+
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
+  .chip{border:1px solid var(--line); background:var(--card); padding:7px 13px; border-radius:999px; cursor:pointer; font-size:.83rem; font-weight:600; color:var(--ink-soft)}
+  .chip[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent); color:var(--ink)}
+
+  /* ---------- Flashcard ---------- */
+  .flash-wrap{max-width:520px; margin:0 auto}
+  .flash{perspective:1200px; height:290px; margin-bottom:16px}
+  .flash-inner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; cursor:pointer}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .face{position:absolute; inset:0; backface-visibility:hidden; border-radius:18px; border:1px solid var(--line);
+    background:var(--card); box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:26px; text-align:center}
+  .face.back{transform:rotateY(180deg); background:var(--card-2)}
+  .face .word{font-size:2rem; font-weight:700; letter-spacing:-.02em}
+  .face .pos{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.1em; margin-top:8px}
+  .face .ex{margin-top:14px; color:var(--ink-soft); font-size:.9rem; font-style:italic; max-width:36ch}
+  .face .hint{position:absolute; bottom:14px; font-size:.68rem; color:var(--ink-soft); font-family:var(--mono); letter-spacing:.1em; text-transform:uppercase}
+  .progress{height:8px; background:var(--card-2); border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-bottom:14px}
+  .progress i{display:block; height:100%; background:var(--teal); transition:width .3s}
+
+  /* ---------- Grammar ---------- */
+  .lesson-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px}
+  .lesson-card{padding:18px; cursor:pointer; text-align:left}
+  .lesson-card:hover{border-color:var(--accent)}
+  .lesson-card .num{font-family:var(--mono); font-size:.72rem; color:var(--accent); font-weight:700}
+  .lesson-card h3{font-size:1.05rem; margin:6px 0 5px}
+  .lesson-card p{margin:0; font-size:.83rem; color:var(--ink-soft)}
+  .lesson-card .done{margin-top:10px; font-family:var(--mono); font-size:.72rem; color:var(--teal)}
+  .lesson-detail{padding:24px}
+  .lesson-detail h2{font-size:1.6rem; letter-spacing:-.02em; margin-bottom:6px}
+  .lesson-detail .body{color:var(--ink); font-size:.97rem}
+  .lesson-detail .body p{margin:12px 0}
+  .egtable{width:100%; border-collapse:collapse; margin:14px 0; font-size:.92rem}
+  .egtable td{border:1px solid var(--line); padding:9px 12px; vertical-align:top}
+  .egtable td:first-child{font-weight:650; width:45%}
+  .egtable .fr{color:var(--ink-soft); font-size:.85rem}
+  .quiz-q{border-top:1px solid var(--line); padding-top:18px; margin-top:18px}
+  .quiz-q .q{font-weight:650; margin-bottom:10px}
+  .opt{display:block; width:100%; text-align:left; border:1px solid var(--line); background:var(--card); color:var(--ink);
+    padding:11px 14px; border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:.92rem}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:var(--teal-soft); border-color:var(--teal); font-weight:650}
+  .opt.wrong{background:var(--danger-soft); border-color:var(--danger)}
+  .opt:disabled{cursor:default}
+  .feedback{font-size:.88rem; margin-top:6px; padding:10px 12px; border-radius:8px; display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--teal-soft); color:var(--ink)}
+  .feedback.no{background:var(--danger-soft); color:var(--ink)}
+
+  /* ---------- Games ---------- */
+  .game-pick{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:8px}
+  .lvlgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(56px,1fr)); gap:8px}
+  .lvl-tile{aspect-ratio:1; border:1px solid var(--line); background:var(--card); border-radius:12px; font-family:var(--mono); font-weight:700; font-size:1.05rem; cursor:pointer; display:grid; place-items:center; color:var(--ink)}
+  .lvl-tile:hover{border-color:var(--accent); transform:translateY(-2px)}
+  .lvl-tile.locked{opacity:.4; cursor:not-allowed; background:var(--card-2)}
+  .lvl-tile.locked:hover{transform:none; border-color:var(--line)}
+  .lvl-tile.done{background:var(--teal-soft); border-color:var(--teal); color:var(--teal)}
+  .lvl-tile small{font-size:.58rem; margin-left:1px}
+  .match-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:560px}
+  .match-item{border:1px solid var(--line); background:var(--card); border-radius:10px; padding:13px; cursor:pointer; font-weight:600; text-align:center; font-size:.95rem}
+  .match-item:hover{border-color:var(--accent)}
+  .match-item.sel{background:var(--accent-soft); border-color:var(--accent)}
+  .match-item.done{background:var(--teal-soft); border-color:var(--teal); color:var(--ink-soft); cursor:default; opacity:.65}
+  .match-item.err{background:var(--danger-soft); border-color:var(--danger)}
+  .builder-target{min-height:64px; border:2px dashed var(--line); border-radius:12px; padding:12px; display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; background:var(--card-2)}
+  .word-chip{border:1px solid var(--line); background:var(--card); padding:8px 13px; border-radius:9px; cursor:pointer; font-weight:600; font-size:.92rem}
+  .word-chip:hover{border-color:var(--accent)}
+  .bank{display:flex; gap:8px; flex-wrap:wrap}
+  .qt-word{font-size:2rem; font-weight:700; text-align:center; margin:8px 0 18px; letter-spacing:-.02em}
+  .qt-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .timerbar{height:6px; background:var(--card-2); border-radius:999px; overflow:hidden; margin-bottom:16px; border:1px solid var(--line)}
+  .timerbar i{display:block; height:100%; background:var(--accent); transition:width 1s linear}
+
+  /* ---------- Dialogue ---------- */
+  .chat{display:flex; flex-direction:column; gap:12px; margin-bottom:18px}
+  .bubble{max-width:80%; padding:12px 15px; border-radius:15px; font-size:.95rem; position:relative}
+  .bubble.them{background:var(--card-2); border:1px solid var(--line); border-bottom-left-radius:4px; align-self:flex-start}
+  .bubble.you{background:var(--accent-soft); border:1px solid var(--accent); border-bottom-right-radius:4px; align-self:flex-end}
+  .bubble .who{font-family:var(--mono); font-size:.64rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); margin-bottom:3px}
+  .bubble .fr{color:var(--ink-soft); font-size:.82rem; margin-top:5px; display:none}
+  .bubble.reveal .fr{display:block}
+
+  /* ---------- Speaking ---------- */
+  .mic-stage{text-align:center; padding:26px}
+  .target-sentence{font-size:1.5rem; font-weight:650; letter-spacing:-.01em; margin:8px auto 8px; max-width:24ch}
+  .mic-btn{width:96px; height:96px; border-radius:50%; border:none; background:var(--accent); color:#fff; font-size:2.1rem;
+    cursor:pointer; margin:14px auto; display:grid; place-items:center; box-shadow:0 8px 24px -8px var(--accent)}
+  .mic-btn:hover{background:var(--accent-press)}
+  .mic-btn.rec{animation:ring 1.2s infinite}
+  @keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:0 0 0 26px transparent}}
+  @media (prefers-reduced-motion:reduce){.mic-btn.rec{animation:none}}
+  .score-ring{font-family:var(--mono); font-size:3rem; font-weight:700; letter-spacing:-.03em}
+  .heard{font-style:italic; color:var(--ink-soft); margin-top:6px}
+  .word-diff span{padding:1px 3px; border-radius:4px}
+  .word-diff .hit{background:var(--teal-soft)} .word-diff .miss{background:var(--danger-soft); text-decoration:line-through}
+  .notice{font-size:.82rem; color:var(--ink-soft); background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:11px 14px; margin-top:14px}
+
+  .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--paper);
+    padding:11px 18px; border-radius:999px; font-weight:600; font-size:.88rem; opacity:0; pointer-events:none; transition:.3s; z-index:100}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  /* ---------- Progress: calendar, charts, plan ---------- */
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+  .cal .dow{font-family:var(--mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); text-align:center; padding-bottom:2px}
+  .cal .cell{aspect-ratio:1; border:1px solid var(--line); border-radius:9px; background:var(--card-2); display:grid; place-items:center;
+    font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); cursor:pointer}
+  .cal .cell.empty{border:none; background:transparent; cursor:default}
+  .cal .cell.done{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700}
+  .cal .cell.today{outline:2px solid var(--teal); outline-offset:1px; color:var(--ink)}
+  .cal .cell.today.done{color:#fff}
+  .cal .cell.future{opacity:.35; cursor:not-allowed}
+  .cal .cell:not(.empty):not(.future):hover{border-color:var(--accent)}
+  .barc{display:flex; align-items:flex-end; gap:6px; height:130px; padding-top:8px}
+  .barc .bar{flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:5px; height:100%}
+  .barc .bar i{width:100%; max-width:26px; background:var(--accent); border-radius:5px 5px 0 0; min-height:3px; transition:height .4s}
+  .barc .bar.goal i{background:var(--teal)}
+  .barc .bar small{font-family:var(--mono); font-size:.56rem; color:var(--ink-soft)}
+  .mbar{display:flex; flex-direction:column; gap:13px}
+  .mbar .r{display:grid; grid-template-columns:110px 1fr 44px; align-items:center; gap:10px}
+  .mbar .r .track{height:10px; background:var(--card-2); border:1px solid var(--line); border-radius:999px; overflow:hidden}
+  .mbar .r .track i{display:block; height:100%; border-radius:999px; transition:width .4s}
+  .mbar .r .pctv{font-family:var(--mono); font-weight:700; font-size:.85rem; text-align:right}
+  .rec-card{display:flex; gap:14px; align-items:flex-start; padding:16px; border:1px solid var(--line); border-radius:12px; background:var(--card)}
+  .rec-card .rico{font-size:1.3rem; line-height:1.2}
+  /* segmented level control */
+  .seg{display:inline-flex; background:var(--card-2); border:1px solid var(--line); border-radius:999px; padding:3px; gap:2px}
+  .seg-btn{border:none; background:transparent; color:var(--ink-soft); padding:6px 13px; border-radius:999px; cursor:pointer; font-size:.8rem; font-weight:600; white-space:nowrap}
+  .seg-btn .mono{font-size:.6rem; opacity:.65}
+  .seg-btn:hover{color:var(--ink)}
+  .seg-btn[aria-pressed="true"]{background:var(--accent); color:#fff}
+  .seg-btn[aria-pressed="true"] .mono{opacity:.85}
+  @media(max-width:560px){ .match-grid{grid-template-columns:1fr} .qt-opts{grid-template-columns:1fr} .hero{padding:20px}
+    .mbar .r{grid-template-columns:92px 1fr 40px} }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand" id="brand">
+      <div class="rec-dot" aria-hidden="true"></div>
+      <div><b>Fluent Lab</b><span>STUDIO · ANGLAIS PARLÉ</span></div>
+    </div>
+    <button class="prof-btn" id="profBtn" title="Profils"><span id="profAvatar">🎧</span><span id="profName">Moi</span></button>
+    <button class="streak" id="streakPill" title="Voir tes jours d'entraînement" style="cursor:pointer;color:inherit">🔥 <span id="streakN" class="mono">0</span></button>
+    <button class="icon-btn" id="themeBtn" title="Changer de thème" aria-label="Changer de thème">◐</button>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist">
+    <button class="tab" role="tab" data-view="home" aria-selected="true"><span class="ico">◉</span>Accueil</button>
+    <button class="tab" role="tab" data-view="progress"><span class="ico">▣</span>Progrès</button>
+    <button class="tab" role="tab" data-view="path"><span class="ico">✦</span>Parcours</button>
+    <button class="tab" role="tab" data-view="vocab"><span class="ico">▤</span>Vocabulaire</button>
+    <button class="tab" role="tab" data-view="grammar"><span class="ico">▦</span>Grammaire</button>
+    <button class="tab" role="tab" data-view="games"><span class="ico">◆</span>Jeux</button>
+    <button class="tab" role="tab" data-view="dialogue"><span class="ico">◗</span>Conversation</button>
+    <button class="tab" role="tab" data-view="reading"><span class="ico">▥</span>Lecture</button>
+    <button class="tab" role="tab" data-view="shadow"><span class="ico">◎</span>Shadowing</button>
+    <button class="tab" role="tab" data-view="talk"><span class="ico">◐</span>Élocution</button>
+    <button class="tab" role="tab" data-view="speak"><span class="ico">●</span>Prononciation</button>
+  </nav>
+</header>
+
+<main>
+  <section class="view active" id="view-home"></section>
+  <section class="view" id="view-progress"></section>
+  <section class="view" id="view-path"></section>
+  <section class="view" id="view-vocab"></section>
+  <section class="view" id="view-grammar"></section>
+  <section class="view" id="view-games"></section>
+  <section class="view" id="view-dialogue"></section>
+  <section class="view" id="view-reading"></section>
+  <section class="view" id="view-shadow"></section>
+  <section class="view" id="view-talk"></section>
+  <section class="view" id="view-speak"></section>
+</main>
+
+<div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* =========================================================================
+   FLUENT LAB — data
+   ========================================================================= */
+const VOCAB = {
+  "Vie quotidienne":[
+    {en:"to wake up",fr:"se réveiller",pos:"verb",lvl:"A2",ex:"I wake up at seven every morning."},
+    {en:"breakfast",fr:"petit-déjeuner",pos:"noun",lvl:"A2",ex:"She skips breakfast when she's late."},
+    {en:"neighbour",fr:"voisin",pos:"noun",lvl:"A2",ex:"My neighbour is always very friendly."},
+    {en:"errand",fr:"course, commission",pos:"noun",lvl:"B1",ex:"I have a few errands to run this afternoon."},
+    {en:"to tidy up",fr:"ranger",pos:"verb",lvl:"A2",ex:"Can you tidy up your room, please?"},
+    {en:"nap",fr:"sieste",pos:"noun",lvl:"A2",ex:"I love a short nap after lunch."},
+    {en:"busy",fr:"occupé",pos:"adj",lvl:"A2",ex:"I'm quite busy this week."},
+    {en:"on purpose",fr:"exprès, volontairement",pos:"phrase",lvl:"B1",ex:"I didn't do it on purpose, I promise."},
+    {en:"chore",fr:"corvée, tâche ménagère",pos:"noun",lvl:"B1",ex:"Doing the dishes is my least favourite chore."},
+    {en:"to run late",fr:"être en retard",pos:"phrase",lvl:"B2",ex:"Sorry, I'm running late because of traffic."}
+  ],
+  "Voyage":[
+    {en:"boarding pass",fr:"carte d'embarquement",pos:"noun",lvl:"B1",ex:"Please have your boarding pass ready."},
+    {en:"delay",fr:"retard",pos:"noun",lvl:"A2",ex:"There was a two-hour delay at the airport."},
+    {en:"luggage",fr:"bagages",pos:"noun",lvl:"A2",ex:"My luggage got lost on the way."},
+    {en:"to check in",fr:"s'enregistrer",pos:"verb",lvl:"A2",ex:"We need to check in before noon."},
+    {en:"aisle seat",fr:"siège côté couloir",pos:"noun",lvl:"B1",ex:"I always ask for an aisle seat."},
+    {en:"round trip",fr:"aller-retour",pos:"noun",lvl:"B1",ex:"A round trip is cheaper than two one-ways."},
+    {en:"landmark",fr:"monument, point de repère",pos:"noun",lvl:"B1",ex:"The tower is a famous landmark."},
+    {en:"to get lost",fr:"se perdre",pos:"verb",lvl:"A2",ex:"We got lost in the old town."},
+    {en:"off the beaten track",fr:"hors des sentiers battus",pos:"phrase",lvl:"B2",ex:"We love places off the beaten track."}
+  ],
+  "Travail":[
+    {en:"deadline",fr:"échéance, date limite",pos:"noun",lvl:"B1",ex:"The deadline is next Friday."},
+    {en:"meeting",fr:"réunion",pos:"noun",lvl:"A2",ex:"Let's schedule a meeting for tomorrow."},
+    {en:"to follow up",fr:"faire un suivi, relancer",pos:"verb",lvl:"B1",ex:"I'll follow up with you next week."},
+    {en:"skill",fr:"compétence",pos:"noun",lvl:"B1",ex:"Communication is a key skill."},
+    {en:"raise",fr:"augmentation",pos:"noun",lvl:"B1",ex:"She asked her boss for a raise."},
+    {en:"to hire",fr:"embaucher",pos:"verb",lvl:"B1",ex:"They plan to hire two engineers."},
+    {en:"workload",fr:"charge de travail",pos:"noun",lvl:"B2",ex:"My workload is heavy right now."},
+    {en:"to be in charge of",fr:"être responsable de",pos:"phrase",lvl:"B1",ex:"She is in charge of the whole team."},
+    {en:"to touch base",fr:"prendre contact, faire le point",pos:"phrase",lvl:"B2",ex:"Let's touch base after the weekend."}
+  ],
+  "Nourriture":[
+    {en:"tasty",fr:"savoureux",pos:"adj",lvl:"A2",ex:"This soup is really tasty."},
+    {en:"to order",fr:"commander",pos:"verb",lvl:"A2",ex:"I'd like to order the fish, please."},
+    {en:"bill",fr:"addition",pos:"noun",lvl:"A2",ex:"Could we have the bill, please?"},
+    {en:"spicy",fr:"épicé",pos:"adj",lvl:"A2",ex:"Be careful, this curry is very spicy."},
+    {en:"leftovers",fr:"restes",pos:"noun",lvl:"B1",ex:"We ate the leftovers for lunch."},
+    {en:"to be starving",fr:"mourir de faim",pos:"phrase",lvl:"B1",ex:"I'm starving, let's eat now."},
+    {en:"a treat",fr:"un plaisir, une gâterie",pos:"noun",lvl:"B1",ex:"Dessert is a nice treat after a long day."},
+    {en:"homemade",fr:"fait maison",pos:"adj",lvl:"A2",ex:"I prefer homemade bread."},
+    {en:"to grab a bite",fr:"manger un morceau",pos:"phrase",lvl:"B2",ex:"Let's grab a bite before the film."}
+  ],
+  "Émotions & opinions":[
+    {en:"to feel confident",fr:"se sentir sûr de soi",pos:"phrase",lvl:"B1",ex:"I feel confident about the exam."},
+    {en:"annoyed",fr:"agacé",pos:"adj",lvl:"B1",ex:"He was annoyed by the noise."},
+    {en:"I reckon",fr:"je pense, à mon avis",pos:"phrase",lvl:"B2",ex:"I reckon it's going to rain."},
+    {en:"to be into something",fr:"aimer / être passionné par",pos:"phrase",lvl:"B2",ex:"I'm really into jazz these days."},
+    {en:"overwhelmed",fr:"débordé, submergé",pos:"adj",lvl:"B2",ex:"She felt overwhelmed by the workload."},
+    {en:"to look forward to",fr:"avoir hâte de",pos:"phrase",lvl:"B1",ex:"I look forward to the weekend."},
+    {en:"awkward",fr:"gênant, maladroit",pos:"adj",lvl:"B1",ex:"That was an awkward silence."},
+    {en:"to be worth it",fr:"en valoir la peine",pos:"phrase",lvl:"B1",ex:"The trip was long but worth it."},
+    {en:"happy",fr:"content, heureux",pos:"adj",lvl:"A2",ex:"I'm really happy to see you."},
+    {en:"tired",fr:"fatigué",pos:"adj",lvl:"A2",ex:"I feel tired after work."}
+  ],
+  "Expressions utiles":[
+    {en:"It's up to you",fr:"c'est comme tu veux",pos:"phrase",lvl:"B1",ex:"Tea or coffee? It's up to you."},
+    {en:"never mind",fr:"laisse tomber, tant pis",pos:"phrase",lvl:"B1",ex:"Never mind, I'll do it myself."},
+    {en:"to hang out",fr:"traîner, passer du temps",pos:"phrase",lvl:"B1",ex:"Let's hang out this weekend."},
+    {en:"sort of",fr:"un peu, en quelque sorte",pos:"phrase",lvl:"B2",ex:"I'm sort of tired today."},
+    {en:"as far as I know",fr:"pour autant que je sache",pos:"phrase",lvl:"B2",ex:"As far as I know, the shop is open."},
+    {en:"to make sense",fr:"avoir du sens",pos:"phrase",lvl:"B1",ex:"That explanation makes sense."},
+    {en:"by the way",fr:"au fait",pos:"phrase",lvl:"A2",ex:"By the way, did you call her?"},
+    {en:"to catch up",fr:"se donner des nouvelles / rattraper",pos:"phrase",lvl:"B1",ex:"Let's catch up over coffee."},
+    {en:"thanks a lot",fr:"merci beaucoup",pos:"phrase",lvl:"A2",ex:"Thanks a lot for your help."}
+  ],
+  "Verbes courants":[
+    {en:"to bring",fr:"apporter",pos:"verb",lvl:"A2",ex:"Can you bring some water?"},
+    {en:"to keep",fr:"garder",pos:"verb",lvl:"A2",ex:"Keep your ticket safe."},
+    {en:"to borrow",fr:"emprunter",pos:"verb",lvl:"B1",ex:"Can I borrow your pen?"},
+    {en:"to lend",fr:"prêter",pos:"verb",lvl:"B1",ex:"She lent me her car."},
+    {en:"to improve",fr:"améliorer",pos:"verb",lvl:"B1",ex:"I want to improve my English."},
+    {en:"to suggest",fr:"suggérer",pos:"verb",lvl:"B1",ex:"I suggest we leave early."},
+    {en:"to complain",fr:"se plaindre",pos:"verb",lvl:"B1",ex:"He complained about the noise."},
+    {en:"to afford",fr:"avoir les moyens de",pos:"verb",lvl:"B2",ex:"I can't afford a new laptop."},
+    {en:"to achieve",fr:"accomplir, atteindre",pos:"verb",lvl:"B2",ex:"She achieved her goal."},
+    {en:"to avoid",fr:"éviter",pos:"verb",lvl:"B2",ex:"Try to avoid rush hour."}
+  ],
+  "Mots utiles +":[
+    {en:"tool",fr:"outil",pos:"noun",lvl:"A2",ex:"A hammer is a useful tool."},
+    {en:"mistake",fr:"erreur",pos:"noun",lvl:"A2",ex:"Everyone makes mistakes."},
+    {en:"reason",fr:"raison",pos:"noun",lvl:"A2",ex:"Give me one good reason."},
+    {en:"advice",fr:"conseil",pos:"noun",lvl:"B1",ex:"Thanks for the advice."},
+    {en:"goal",fr:"objectif, but",pos:"noun",lvl:"B1",ex:"My goal is to speak fluently."},
+    {en:"issue",fr:"problème, sujet",pos:"noun",lvl:"B1",ex:"We need to discuss this issue."},
+    {en:"meaning",fr:"sens, signification",pos:"noun",lvl:"B1",ex:"What's the meaning of this word?"},
+    {en:"behaviour",fr:"comportement",pos:"noun",lvl:"B2",ex:"His behaviour was strange."},
+    {en:"environment",fr:"environnement",pos:"noun",lvl:"B2",ex:"We must protect the environment."},
+    {en:"opportunity",fr:"occasion, opportunité",pos:"noun",lvl:"B2",ex:"It's a great opportunity."}
+  ]
+};
+
+const GRAMMAR = [
+  {
+    id:"g1", title:"Present Simple vs Present Continuous",
+    sub:"Habitudes vs action en cours",
+    body:`<p><b>Le present simple</b> décrit des habitudes, des vérités générales et des routines. On utilise la base verbale, avec un <b>-s</b> à la 3ᵉ personne du singulier (he/she/it).</p>
+    <p><b>Le present continuous</b> (<i>am/is/are + verbe-ing</i>) décrit une action <b>en train de se dérouler maintenant</b> ou une situation temporaire.</p>`,
+    examples:[
+      ["I <b>work</b> in Paris.","Je travaille à Paris. (habitude)"],
+      ["I <b>am working</b> from home today.","Je travaille de chez moi aujourd'hui. (maintenant)"],
+      ["She <b>drinks</b> coffee every morning.","Elle boit du café tous les matins."],
+      ["Look! She <b>is drinking</b> tea.","Regarde ! Elle boit du thé (là, maintenant)."]
+    ],
+    quiz:[
+      {q:"Every day, she ___ to the office by bus.",opts:["goes","is going","go","going"],a:0,why:"Habitude quotidienne → present simple, 3ᵉ personne = goes."},
+      {q:"Be quiet! The baby ___.",opts:["sleeps","is sleeping","sleep","slept"],a:1,why:"Action en cours maintenant → present continuous."},
+      {q:"Water ___ at 100 degrees.",opts:["is boiling","boil","boils","boiled"],a:2,why:"Vérité générale → present simple."}
+    ]
+  },
+  {
+    id:"g2", title:"Past Simple vs Present Perfect",
+    sub:"Fini et daté vs lien avec le présent",
+    body:`<p><b>Le past simple</b> parle d'une action <b>terminée à un moment précis</b> du passé (yesterday, in 2019, last week). Verbe au prétérit (worked, went, saw).</p>
+    <p><b>Le present perfect</b> (<i>have/has + participe passé</i>) relie le passé au présent : expérience de vie, résultat actuel, action récente sans date précise (ever, never, already, yet, just).</p>`,
+    examples:[
+      ["I <b>visited</b> London in 2019.","J'ai visité Londres en 2019. (daté)"],
+      ["I <b>have visited</b> London twice.","J'ai visité Londres deux fois. (expérience)"],
+      ["She <b>finished</b> the report yesterday.","Elle a fini le rapport hier."],
+      ["She <b>has just finished</b> the report.","Elle vient de finir le rapport."]
+    ],
+    quiz:[
+      {q:"___ you ever ___ sushi?",opts:["Did / eat","Have / eaten","Do / eat","Are / eating"],a:1,why:"Expérience de vie (ever) → present perfect: Have you ever eaten."},
+      {q:"We ___ a great film last night.",opts:["have seen","see","saw","seen"],a:2,why:"Moment précis (last night) → past simple: saw."},
+      {q:"I can't find my keys. I ___ them.",opts:["lost","have lost","lose","was losing"],a:1,why:"Résultat présent (elles manquent maintenant) → present perfect."}
+    ]
+  },
+  {
+    id:"g3", title:"A / An / The",
+    sub:"Les articles",
+    body:`<p><b>a / an</b> = article indéfini (un, une), pour un élément <b>non précisé</b> ou mentionné pour la première fois. <b>an</b> devant un son voyelle (an apple, an hour).</p>
+    <p><b>the</b> = article défini, pour quelque chose de <b>connu, unique ou déjà mentionné</b>.</p>
+    <p>Pas d'article devant les noms généraux au pluriel ou indénombrables (I like music, dogs are friendly).</p>`,
+    examples:[
+      ["I bought <b>a</b> book.","J'ai acheté un livre. (lequel ? peu importe)"],
+      ["<b>The</b> book was fascinating.","Le livre était passionnant. (celui déjà cité)"],
+      ["She waited for <b>an</b> hour.","Elle a attendu une heure. (son voyelle → an)"],
+      ["___ Dogs are loyal.","Les chiens sont fidèles. (généralité → pas d'article)"]
+    ],
+    quiz:[
+      {q:"He is ___ honest man.",opts:["a","an","the","—"],a:1,why:"'honest' commence par un son voyelle (le h est muet) → an."},
+      {q:"Can you close ___ door, please?",opts:["a","an","the","—"],a:2,why:"Une porte précise et connue → the."},
+      {q:"I love ___ coffee in the morning.",opts:["a","an","the","—"],a:3,why:"Sens général et indénombrable → pas d'article."}
+    ]
+  },
+  {
+    id:"g4", title:"In / On / At (le temps)",
+    sub:"Prépositions de temps",
+    body:`<p><b>at</b> → heures précises et moments : at 6pm, at night, at the weekend, at Christmas.</p>
+    <p><b>on</b> → jours et dates : on Monday, on July 4th, on my birthday.</p>
+    <p><b>in</b> → mois, saisons, années, périodes : in June, in winter, in 2025, in the morning.</p>`,
+    examples:[
+      ["The meeting is <b>at</b> 3 o'clock.","La réunion est à 15h."],
+      ["I was born <b>on</b> Monday.","Je suis né un lundi."],
+      ["We travel <b>in</b> summer.","Nous voyageons en été."],
+      ["See you <b>in</b> the morning.","À demain matin."]
+    ],
+    quiz:[
+      {q:"The shop opens ___ 9 a.m.",opts:["in","on","at","—"],a:2,why:"Heure précise → at."},
+      {q:"My birthday is ___ October.",opts:["in","on","at","—"],a:0,why:"Un mois → in."},
+      {q:"Let's meet ___ Friday.",opts:["in","on","at","—"],a:1,why:"Un jour de la semaine → on."}
+    ]
+  },
+  {
+    id:"g5", title:"Comparatives & Superlatives",
+    sub:"Plus… que / le plus…",
+    body:`<p><b>Comparatif</b> : adjectif court + <b>-er + than</b> (bigger than). Adjectif long → <b>more … than</b> (more expensive than).</p>
+    <p><b>Superlatif</b> : <b>the …-est</b> (the biggest) ou <b>the most …</b> (the most expensive).</p>
+    <p>Irréguliers : good → better → the best ; bad → worse → the worst.</p>`,
+    examples:[
+      ["This car is <b>faster than</b> mine.","Cette voiture est plus rapide que la mienne."],
+      ["It's <b>the biggest</b> city in France.","C'est la plus grande ville de France."],
+      ["Health is <b>more important than</b> money.","La santé est plus importante que l'argent."],
+      ["This is <b>the best</b> coffee ever.","C'est le meilleur café de tous les temps."]
+    ],
+    quiz:[
+      {q:"Today is ___ than yesterday.",opts:["hot","hotter","hottest","more hot"],a:1,why:"Adjectif court + than → hotter than."},
+      {q:"This is ___ restaurant in town.",opts:["the best","the better","best","more good"],a:0,why:"Superlatif irrégulier de good → the best."},
+      {q:"A plane is ___ a car.",opts:["expensiver than","more expensive than","the most expensive","expensive than"],a:1,why:"Adjectif long → more expensive than."}
+    ]
+  }
+];
+
+const SENTENCES = [
+  "I would like a cup of tea please",
+  "She has lived here for ten years",
+  "We are going to the cinema tonight",
+  "Could you tell me the way to the station",
+  "They have never been to Japan before",
+  "I am looking forward to the weekend",
+  "He usually gets up early on Mondays",
+  "This is the best film I have ever seen"
+];
+
+const DIALOGUES = [
+  {
+    title:"Au café ☕", sub:"Commander et discuter",
+    lines:[
+      {who:"Barista",them:true,en:"Hi there! What can I get you?",fr:"Bonjour ! Qu'est-ce que je vous sers ?"},
+      {who:"Toi",them:false,en:"Hi, I'd like a medium latte, please.",fr:"Bonjour, je voudrais un latte moyen, s'il vous plaît."},
+      {who:"Barista",them:true,en:"Sure. Anything to eat with that?",fr:"Bien sûr. Quelque chose à manger avec ça ?"},
+      {who:"Toi",them:false,en:"Yes, could I also have a croissant?",fr:"Oui, je pourrais aussi avoir un croissant ?"},
+      {who:"Barista",them:true,en:"Of course. For here or to go?",fr:"Bien sûr. Sur place ou à emporter ?"},
+      {who:"Toi",them:false,en:"To go, please. How much is that?",fr:"À emporter, s'il vous plaît. Ça fait combien ?"},
+      {who:"Barista",them:true,en:"That's six fifty. Have a lovely day!",fr:"Ça fait six cinquante. Bonne journée !"}
+    ]
+  },
+  {
+    title:"Entretien d'embauche 💼", sub:"Se présenter avec assurance",
+    lines:[
+      {who:"Recruteur",them:true,en:"Thanks for coming in. Tell me about yourself.",fr:"Merci d'être venu. Parlez-moi de vous."},
+      {who:"Toi",them:false,en:"Thank you. I'm a marketing specialist with five years of experience.",fr:"Merci. Je suis spécialiste marketing avec cinq ans d'expérience."},
+      {who:"Recruteur",them:true,en:"Great. Why are you interested in this role?",fr:"Très bien. Pourquoi ce poste vous intéresse-t-il ?"},
+      {who:"Toi",them:false,en:"I'm looking for a new challenge where I can grow.",fr:"Je cherche un nouveau défi où je peux évoluer."},
+      {who:"Recruteur",them:true,en:"What would you say is your biggest strength?",fr:"Quelle est votre plus grande qualité selon vous ?"},
+      {who:"Toi",them:false,en:"I'm very organised and I work well under pressure.",fr:"Je suis très organisé et je travaille bien sous pression."},
+      {who:"Recruteur",them:true,en:"Do you have any questions for us?",fr:"Avez-vous des questions pour nous ?"},
+      {who:"Toi",them:false,en:"Yes, what does a typical week look like on your team?",fr:"Oui, à quoi ressemble une semaine typique dans votre équipe ?"}
+    ]
+  },
+  {
+    title:"Rencontre & small talk 👋", sub:"Faire connaissance",
+    lines:[
+      {who:"Sam",them:true,en:"Hey, I don't think we've met. I'm Sam.",fr:"Salut, je crois qu'on ne s'est jamais rencontrés. Je suis Sam."},
+      {who:"Toi",them:false,en:"Nice to meet you, Sam. I'm new here.",fr:"Enchanté, Sam. Je suis nouveau ici."},
+      {who:"Sam",them:true,en:"Oh nice! So what do you do?",fr:"Ah super ! Alors, qu'est-ce que tu fais dans la vie ?"},
+      {who:"Toi",them:false,en:"I work in design. How about you?",fr:"Je travaille dans le design. Et toi ?"},
+      {who:"Sam",them:true,en:"I'm in sales. How are you finding the city so far?",fr:"Je suis dans la vente. Tu trouves la ville comment jusqu'ici ?"},
+      {who:"Toi",them:false,en:"I really like it, but I'm still getting used to it.",fr:"J'aime beaucoup, mais je m'y habitue encore."},
+      {who:"Sam",them:true,en:"We should grab a coffee sometime!",fr:"On devrait prendre un café un de ces jours !"},
+      {who:"Toi",them:false,en:"I'd love that. Here's my number.",fr:"Avec plaisir. Voici mon numéro."}
+    ]
+  }
+];
+
+const SPEAK_LINES = [
+  {en:"How are you doing today?",fr:"Comment vas-tu aujourd'hui ?"},
+  {en:"Could you say that again, please?",fr:"Pourriez-vous répéter, s'il vous plaît ?"},
+  {en:"I'm really looking forward to it.",fr:"J'ai vraiment hâte."},
+  {en:"That sounds like a great idea.",fr:"Ça a l'air d'une très bonne idée."},
+  {en:"I completely agree with you.",fr:"Je suis tout à fait d'accord avec toi."},
+  {en:"She sells seashells by the seashore.",fr:"(virelangue — les sons S / SH)"},
+  {en:"The thirty-three thieves thought they thrilled the throne.",fr:"(virelangue — le son TH)"},
+  {en:"I would like to make a reservation.",fr:"Je voudrais faire une réservation."},
+  {en:"Thank you so much for your help.",fr:"Merci beaucoup pour votre aide."},
+  {en:"What time does the next train leave?",fr:"À quelle heure part le prochain train ?"}
+];
+
+const SHADOW = [
+  { title:"Se présenter", level:"A2", lines:[
+    "Hi, my name is Alex.",
+    "I come from a small town near the sea.",
+    "I work as a graphic designer.",
+    "In my free time, I love hiking and cooking.",
+    "It's really nice to meet you."
+  ]},
+  { title:"Raconter sa journée", level:"A2", lines:[
+    "I woke up early this morning.",
+    "I had a quick breakfast and some coffee.",
+    "Then I took the bus to the office.",
+    "We had a long meeting in the afternoon.",
+    "After work, I went for a short walk."
+  ]},
+  { title:"Donner son avis", level:"B1", lines:[
+    "Honestly, I think it's a great idea.",
+    "There are a few reasons for this.",
+    "First of all, it saves a lot of time.",
+    "On the other hand, it can be expensive.",
+    "All in all, I'm really in favour of it."
+  ]},
+  { title:"Au téléphone", level:"B1", lines:[
+    "Hello, this is Sarah speaking.",
+    "I'm calling about the meeting tomorrow.",
+    "Could we move it to the afternoon?",
+    "That would work much better for me.",
+    "Great, thank you so much for your help."
+  ]},
+  { title:"Commander à manger", level:"A2", lines:[
+    "Hi, can I see the menu, please?",
+    "I'll have the chicken with rice.",
+    "Could I get a glass of water too?",
+    "That's all for now, thank you.",
+    "Can we have the bill, please?"
+  ]},
+  { title:"Nuancer son propos", level:"B2", lines:[
+    "I see your point, but I'm not entirely sure I agree.",
+    "It really depends on how you look at it.",
+    "To be fair, there are arguments on both sides.",
+    "That said, I still lean towards the first option.",
+    "At the end of the day, it's a matter of priorities."
+  ]}
+];
+
+const READINGS = [
+  { title:"The Power of Small Habits", level:"B1", mins:"~1 min", text:[
+    "We often think that big changes need big actions. In reality, small habits shape our lives far more than we imagine.",
+    "When you read for ten minutes every day, it feels like almost nothing. But over a year, those minutes turn into hours of practice.",
+    "The secret is not motivation, it is repetition. Do a little, do it often, and let time do the rest.",
+    "So choose one small habit today, and promise yourself to keep it. Your future self will thank you for it."
+  ]},
+  { title:"A Walk by the Sea", level:"A2", mins:"~1 min", text:[
+    "The morning was cold and bright. I walked slowly along the empty beach.",
+    "The waves were gentle, and the sound of the water was calm and steady.",
+    "A few birds flew over the sea, looking for their breakfast.",
+    "I sat on a rock and watched the sun rise above the horizon.",
+    "In that quiet moment, everything felt simple and peaceful."
+  ]},
+  { title:"Why We Tell Stories", level:"B2", mins:"~1 min", text:[
+    "Long before writing existed, people gathered around fires to share stories.",
+    "Stories helped them remember the past, explain the world, and teach the young.",
+    "Even today, we are drawn to a good story, whether in a book, a film, or a simple conversation.",
+    "A story turns dry facts into something we can feel and understand.",
+    "Perhaps that is why storytelling remains one of the most powerful human skills."
+  ]},
+  { title:"A Letter to My Future Self", level:"B1", mins:"~1 min", text:[
+    "Dear future me, I hope you are doing well and still chasing your dreams.",
+    "Right now, I am working hard to improve my English, one day at a time.",
+    "Some days are difficult, and I feel like giving up, but I keep going anyway.",
+    "I want you to remember how far we have come and to be proud of it.",
+    "Keep learning, stay curious, and never stop believing in yourself."
+  ]},
+  { title:"A Rainy Sunday", level:"A2", mins:"~1 min", text:[
+    "It was raining all day, so I stayed at home.",
+    "I made a big cup of tea and read my favourite book.",
+    "In the afternoon, I called my sister on the phone.",
+    "We talked and laughed for almost an hour.",
+    "It was a simple day, but a very happy one."
+  ]},
+  { title:"My New Phone", level:"A2", mins:"~1 min", text:[
+    "Last week, I bought a new phone at the shop.",
+    "It is fast, light, and very easy to use.",
+    "I can take great photos of my family and friends.",
+    "Every evening, I use it to learn a little English.",
+    "I am really happy with my new phone."
+  ]},
+  { title:"The Value of Boredom", level:"B2", mins:"~1 min", text:[
+    "In a world full of screens, we rarely allow ourselves to be bored.",
+    "Yet boredom is not the enemy of creativity; it is often its source.",
+    "When the mind has nothing to react to, it begins to wander and invent.",
+    "Some of our best ideas appear precisely when we are doing nothing at all.",
+    "So the next time you feel restless, resist the urge to reach for your phone."
+  ]},
+  { title:"Learning to Listen", level:"B2", mins:"~1 min", text:[
+    "We often think that speaking well is the hardest part of a conversation.",
+    "In truth, listening carefully is a far rarer and more valuable skill.",
+    "When we truly listen, we stop preparing our reply and start to understand.",
+    "People can sense the difference, and they open up in surprising ways.",
+    "To become a better speaker, paradoxically, learn to become a better listener."
+  ]}
+];
+
+const TOPICS = [
+  {en:"Describe your perfect weekend.",fr:"Décris ton week-end idéal."},
+  {en:"Talk about a person who inspires you.",fr:"Parle d'une personne qui t'inspire."},
+  {en:"What is your favourite place to travel, and why?",fr:"Quel est ton lieu de voyage préféré, et pourquoi ?"},
+  {en:"Should people work from home? Give your opinion.",fr:"Faut-il télétravailler ? Donne ton avis."},
+  {en:"Describe a skill you would love to learn.",fr:"Décris une compétence que tu aimerais apprendre."},
+  {en:"What did you do last weekend?",fr:"Qu'as-tu fait le week-end dernier ?"},
+  {en:"Is technology making us happier?",fr:"La technologie nous rend-elle plus heureux ?"},
+  {en:"Describe your favourite meal.",fr:"Décris ton plat préféré."},
+  {en:"What would you do with an extra hour every day?",fr:"Que ferais-tu d'une heure de plus chaque jour ?"},
+  {en:"Talk about a film or book you love.",fr:"Parle d'un film ou d'un livre que tu adores."},
+  {en:"Is it better to live in a city or the countryside?",fr:"Vaut-il mieux vivre en ville ou à la campagne ?"},
+  {en:"Describe a challenge you overcame.",fr:"Décris un défi que tu as surmonté."},
+  {en:"What makes a good friend?",fr:"Qu'est-ce qui fait un bon ami ?"},
+  {en:"How do you like to relax after a busy day?",fr:"Comment aimes-tu te détendre après une journée chargée ?"},
+  {en:"If you could meet anyone, who would it be?",fr:"Si tu pouvais rencontrer n'importe qui, qui choisirais-tu ?"},
+  {en:"Describe your morning routine.",fr:"Décris ta routine du matin."},
+  {en:"What is the best advice you have ever received?",fr:"Quel est le meilleur conseil qu'on t'ait donné ?"},
+  {en:"Talk about a goal you want to achieve this year.",fr:"Parle d'un objectif que tu veux atteindre cette année."}
+];
+
+/* Banque de savoir-faire pour la génération de leçons (A2 → B2) */
+const GRAMMAR_BANK = [
+  { key:"present", level:"A2", title:"Présent simple / continu",
+    rule:"Habitude → present simple (he works). Action en cours → be + -ing (he is working).",
+    items:[
+      {q:"Every morning she ___ coffee.",opts:["drinks","is drinking","drink","drinking"],a:0,why:"Habitude → present simple : drinks."},
+      {q:"Look! It ___ outside right now.",opts:["rains","is raining","rain","rained"],a:1,why:"Maintenant → be + -ing : is raining."},
+      {q:"They usually ___ to work by bus.",opts:["are going","go","goes","going"],a:1,why:"Habitude (usually) → go."}
+    ]},
+  { key:"articles", level:"A2", title:"Articles a / an / the",
+    rule:"a/an = première mention (son voyelle → an). the = déjà connu/unique. Rien pour le sens général.",
+    items:[
+      {q:"She is ___ engineer.",opts:["a","an","the","—"],a:1,why:"Son voyelle → an engineer."},
+      {q:"Please open ___ window near you.",opts:["a","an","the","—"],a:2,why:"Fenêtre précise → the."},
+      {q:"I really like ___ music.",opts:["a","an","the","—"],a:3,why:"Sens général indénombrable → pas d'article."}
+    ]},
+  { key:"preptime", level:"A2", title:"Prépositions in / on / at",
+    rule:"at + heure, on + jour/date, in + mois/saison/année.",
+    items:[
+      {q:"The class starts ___ 9 a.m.",opts:["in","on","at","—"],a:2,why:"Heure → at."},
+      {q:"We met ___ Monday.",opts:["in","on","at","—"],a:1,why:"Jour → on."},
+      {q:"It's cold ___ winter.",opts:["in","on","at","—"],a:0,why:"Saison → in."}
+    ]},
+  { key:"plurals", level:"A2", title:"Pluriels & this / that",
+    rule:"Pluriels irréguliers (child→children, foot→feet). this/these (près), that/those (loin).",
+    items:[
+      {q:"Look at those ___.",opts:["childs","children","childrens","child"],a:1,why:"Pluriel irrégulier : children."},
+      {q:"I have three ___.",opts:["foot","foots","feet","feets"],a:2,why:"foot → feet."},
+      {q:"___ shoes over there are mine.",opts:["This","These","That","Those"],a:3,why:"Pluriel + loin → Those."}
+    ]},
+  { key:"past", level:"A2", title:"Past simple",
+    rule:"Action passée datée. Régulier +ed (worked), irréguliers (go→went, see→saw).",
+    items:[
+      {q:"Yesterday I ___ to the market.",opts:["go","goed","went","gone"],a:2,why:"go → went."},
+      {q:"She ___ a great film last night.",opts:["see","saw","seen","seeing"],a:1,why:"see → saw."},
+      {q:"They ___ football on Sunday.",opts:["play","plays","played","playing"],a:2,why:"Régulier au passé : played."}
+    ]},
+  { key:"perfect", level:"B1", title:"Present perfect vs past",
+    rule:"have/has + participe = lien au présent (ever, never, just, yet). Date précise → past simple.",
+    items:[
+      {q:"___ you ever ___ to Spain?",opts:["Did / go","Have / been","Have / went","Are / being"],a:1,why:"Expérience (ever) → Have you ever been."},
+      {q:"I ___ my keys, I can't find them.",opts:["lost","have lost","lose","was losing"],a:1,why:"Résultat présent → have lost."},
+      {q:"We ___ this film last week.",opts:["have seen","saw","seen","have saw"],a:1,why:"Date précise (last week) → saw."}
+    ]},
+  { key:"compar", level:"B1", title:"Comparatifs & superlatifs",
+    rule:"Court + -er than (bigger than). Long → more … than. Superlatif : the -est / the most. good→better→best.",
+    items:[
+      {q:"This box is ___ than that one.",opts:["heavy","heavier","heaviest","more heavy"],a:1,why:"Court + than → heavier than."},
+      {q:"It's ___ day of the year.",opts:["the hotter","the hottest","hottest","most hot"],a:1,why:"Superlatif court → the hottest."},
+      {q:"Health is ___ than money.",opts:["importanter","more important","most important","the importantest"],a:1,why:"Long → more important than."}
+    ]},
+  { key:"quantifiers", level:"B1", title:"some / any / much / many",
+    rule:"some (affirmatif), any (négatif/interrogatif). many + dénombrable, much + indénombrable.",
+    items:[
+      {q:"There isn't ___ milk left.",opts:["some","any","many","a"],a:1,why:"Négatif → any."},
+      {q:"How ___ books do you have?",opts:["much","many","any","a lot"],a:1,why:"Dénombrable → many."},
+      {q:"I don't have ___ time.",opts:["many","much","some","few"],a:1,why:"Indénombrable (time) → much."}
+    ]},
+  { key:"modals", level:"B1", title:"Modaux : can / should / must",
+    rule:"can = capacité/permission, should = conseil, must = obligation forte.",
+    items:[
+      {q:"You look tired, you ___ rest.",opts:["can","should","must not","couldn't"],a:1,why:"Conseil → should."},
+      {q:"Passengers ___ wear a seatbelt.",opts:["should","must","can","might"],a:1,why:"Obligation → must."},
+      {q:"___ you swim when you were five?",opts:["Can","Could","Must","Should"],a:1,why:"Capacité passée → Could."}
+    ]},
+  { key:"future", level:"B1", title:"Futur : will / going to",
+    rule:"will = décision spontanée / prédiction. be going to = intention / plan.",
+    items:[
+      {q:"Look at those clouds! It ___ rain.",opts:["will","is going to","goes to","shall"],a:1,why:"Preuve présente → be going to."},
+      {q:"The phone is ringing. I ___ get it.",opts:["am going to","will","would","get"],a:1,why:"Décision spontanée → will."},
+      {q:"We ___ visit Rome next summer, it's planned.",opts:["will","are going to","go","would"],a:1,why:"Plan → going to."}
+    ]},
+  { key:"cond", level:"B2", title:"Conditionnel type 1 & 2",
+    rule:"Type 1 (réel) : If + présent, will + base. Type 2 (hypothétique) : If + prétérit, would + base.",
+    items:[
+      {q:"If it rains, we ___ at home.",opts:["stay","will stay","stayed","would stay"],a:1,why:"Type 1 réel → will stay."},
+      {q:"If I ___ rich, I would travel the world.",opts:["am","was","were","will be"],a:2,why:"Type 2 : If I were… → would."},
+      {q:"She would call you if she ___ your number.",opts:["has","had","have","will have"],a:1,why:"Type 2 : If + prétérit → had."}
+    ]},
+  { key:"relative", level:"B2", title:"Propositions relatives",
+    rule:"who (personnes), which (choses), that (les deux), where (lieu).",
+    items:[
+      {q:"The man ___ lives next door is a doctor.",opts:["which","who","where","whom"],a:1,why:"Personne → who."},
+      {q:"This is the book ___ changed my life.",opts:["who","which","where","when"],a:1,why:"Chose → which (ou that)."},
+      {q:"That's the café ___ we first met.",opts:["which","who","where","that"],a:2,why:"Lieu → where."}
+    ]},
+
+  /* ===================== A2 (compléments) ===================== */
+  { key:"tobe", level:"A2", title:"Verbe « be » (am/is/are)", rule:"am (I), is (he/she/it), are (you/we/they). Négatif : isn't / aren't.", items:[
+    {q:"She ___ a teacher.",opts:["am","is","are","be"],a:1,why:"he/she/it → is."},
+    {q:"They ___ from Canada.",opts:["is","am","are","be"],a:2,why:"they → are."},
+    {q:"I ___ very tired today.",opts:["is","are","am","be"],a:2,why:"I → am."}
+  ]},
+  { key:"havegot", level:"A2", title:"« have got » (possession)", rule:"have got / has got = avoir. he/she/it → has got.", items:[
+    {q:"She ___ two brothers.",opts:["have got","has got","have","is got"],a:1,why:"she → has got."},
+    {q:"I ___ a new phone.",opts:["has got","have got","gots","am got"],a:1,why:"I → have got."},
+    {q:"___ you got a car?",opts:["Has","Have","Do","Are"],a:1,why:"Question : Have you got…?"}
+  ]},
+  { key:"prepplace", level:"A2", title:"Prépositions de lieu", rule:"in (dans), on (sur), under (sous), next to (à côté de), between (entre).", items:[
+    {q:"The keys are ___ the table.",opts:["on","in","under","at"],a:0,why:"sur la table → on."},
+    {q:"The cat is ___ the box.",opts:["on","in","next","between"],a:1,why:"dans la boîte → in."},
+    {q:"The bank is ___ to the shop.",opts:["next","under","in","on"],a:0,why:"à côté de → next to."}
+  ]},
+  { key:"pastbe", level:"A2", title:"was / were", rule:"was (I/he/she/it), were (you/we/they). Négatif : wasn't / weren't.", items:[
+    {q:"I ___ at home yesterday.",opts:["was","were","am","is"],a:0,why:"I → was."},
+    {q:"They ___ very happy.",opts:["was","were","are","been"],a:1,why:"they → were."},
+    {q:"He ___ not there.",opts:["were","was","are","did"],a:1,why:"he → was."}
+  ]},
+  { key:"canA2", level:"A2", title:"can / can't (capacité)", rule:"can + base = capacité/permission. Négatif : can't. Même forme à toutes les personnes.", items:[
+    {q:"She ___ speak three languages.",opts:["can","cans","is can","can to"],a:0,why:"can + base, pas de -s."},
+    {q:"I ___ swim, I never learned.",opts:["can","can't","don't can","not can"],a:1,why:"négatif → can't."},
+    {q:"___ you help me, please?",opts:["Do","Are","Can","Have"],a:2,why:"demande → Can you…?"}
+  ]},
+  { key:"thereis", level:"A2", title:"there is / there are", rule:"there is + singulier, there are + pluriel.", items:[
+    {q:"___ a book on the desk.",opts:["There is","There are","It is","There have"],a:0,why:"singulier → There is."},
+    {q:"___ many people here.",opts:["There is","There are","It are","There has"],a:1,why:"pluriel → There are."},
+    {q:"___ any milk in the fridge?",opts:["Is there","Are there","There is","Have there"],a:0,why:"milk (singulier) → Is there…?"}
+  ]},
+  { key:"possadj", level:"A2", title:"Adjectifs possessifs", rule:"my, your, his, her, its, our, their + nom.", items:[
+    {q:"This is Tom and this is ___ sister.",opts:["he","his","him","he's"],a:1,why:"possessif de he → his."},
+    {q:"We love ___ new house.",opts:["us","our","ours","we"],a:1,why:"possessif de we → our."},
+    {q:"The dog wags ___ tail.",opts:["it's","its","his","her"],a:1,why:"possessif de it → its (sans apostrophe)."}
+  ]},
+  { key:"genitive", level:"A2", title:"Génitif « 's »", rule:"Possession : nom + 's (Anna's car). Pluriel en -s → apostrophe seule (the girls' room).", items:[
+    {q:"This is ___ bag.",opts:["Anna's","Annas","Anna","of Anna"],a:0,why:"possession → Anna's."},
+    {q:"Where is the ___ office? (un seul directeur)",opts:["managers","manager's","managers'","manager"],a:1,why:"singulier possessif → manager's."},
+    {q:"These are the ___ toys. (plusieurs enfants)",opts:["childrens","children's","childrens'","children"],a:1,why:"children → children's."}
+  ]},
+  { key:"objpron", level:"A2", title:"Pronoms compléments", rule:"me, you, him, her, it, us, them (après le verbe ou la préposition).", items:[
+    {q:"I saw ___ at the party. (Tom)",opts:["he","him","his","he's"],a:1,why:"complément → him."},
+    {q:"Can you help ___? (moi)",opts:["I","me","my","mine"],a:1,why:"complément → me."},
+    {q:"We invited ___ to dinner. (eux)",opts:["they","them","their","theirs"],a:1,why:"complément → them."}
+  ]},
+  { key:"freq", level:"A2", title:"Adverbes de fréquence", rule:"always, usually, often, sometimes, never : devant le verbe, mais après « be ».", items:[
+    {q:"She ___ drinks coffee in the morning.",opts:["always","is always","drinks always","always is"],a:0,why:"avant le verbe → always drinks."},
+    {q:"I am ___ late for work.",opts:["never am","never","am never late","late never"],a:1,why:"après be → am never."},
+    {q:"They ___ go to the gym.",opts:["sometimes","are sometimes","sometimes are","go sometimes"],a:0,why:"avant le verbe → sometimes go."}
+  ]},
+  { key:"whq", level:"A2", title:"Questions Wh-", rule:"What (quoi), Where (où), When (quand), Who (qui), Why (pourquoi), How (comment).", items:[
+    {q:"___ do you live?",opts:["What","Where","Who","When"],a:1,why:"lieu → Where."},
+    {q:"___ is your birthday?",opts:["Where","Who","When","What"],a:2,why:"temps → When."},
+    {q:"___ is that man?",opts:["Who","Where","When","How"],a:0,why:"personne → Who."}
+  ]},
+  { key:"imperative", level:"A2", title:"Impératif", rule:"Ordre/conseil : base verbale (Open the door). Négatif : Don't + base.", items:[
+    {q:"___ quiet, please.",opts:["To be","Be","Being","You be"],a:1,why:"impératif → Be."},
+    {q:"___ touch that!",opts:["Not","Don't","No","Doesn't"],a:1,why:"négatif → Don't touch."},
+    {q:"Please ___ down.",opts:["sitting","to sit","sit","sits"],a:2,why:"impératif → base : sit."}
+  ]},
+  { key:"someany", level:"A2", title:"some / any (basique)", rule:"some (affirmatif), any (négatif / question).", items:[
+    {q:"I have ___ questions.",opts:["any","some","a","much"],a:1,why:"affirmatif → some."},
+    {q:"There isn't ___ bread.",opts:["some","any","a","many"],a:1,why:"négatif → any."},
+    {q:"Do you have ___ money?",opts:["some","any","a","much"],a:1,why:"question → any."}
+  ]},
+  { key:"goingtoA2", level:"A2", title:"be going to (projet)", rule:"be going to + base = intention / projet.", items:[
+    {q:"I ___ visit my aunt tomorrow.",opts:["am going to","going to","go to","will going"],a:0,why:"I → am going to."},
+    {q:"She ___ buy a car.",opts:["is going to","going to","are going to","go to"],a:0,why:"she → is going to."},
+    {q:"They ___ move to Paris.",opts:["is going to","are going to","going","will to"],a:1,why:"they → are going to."}
+  ]},
+  { key:"likeing", level:"A2", title:"like + -ing (goûts)", rule:"like / love / enjoy / hate + verbe-ing.", items:[
+    {q:"I love ___ football.",opts:["play","to playing","playing","plays"],a:2,why:"love + -ing → playing."},
+    {q:"She enjoys ___ books.",opts:["read","reading","to read","reads"],a:1,why:"enjoy + -ing → reading."},
+    {q:"They hate ___ early.",opts:["get up","getting up","to getting up","gets up"],a:1,why:"hate + -ing → getting up."}
+  ]},
+
+  /* ===================== B1 (compléments) ===================== */
+  { key:"perfectforsince", level:"B1", title:"Present perfect : for / since", rule:"for + durée (for 5 years). since + point de départ (since 2010).", items:[
+    {q:"I have lived here ___ 2010.",opts:["for","since","from","during"],a:1,why:"point de départ → since."},
+    {q:"She has worked here ___ five years.",opts:["since","for","ago","from"],a:1,why:"durée → for."},
+    {q:"We haven't met ___ last summer.",opts:["for","since","during","from"],a:1,why:"point de départ → since."}
+  ]},
+  { key:"pastcont", level:"B1", title:"Past continuous", rule:"was/were + -ing = action en cours dans le passé (souvent interrompue).", items:[
+    {q:"I ___ TV when he called.",opts:["watched","was watching","am watching","watch"],a:1,why:"action en cours → was watching."},
+    {q:"They ___ dinner at 8 p.m.",opts:["were having","was having","have","having"],a:0,why:"they → were having."},
+    {q:"While she ___, it started to rain.",opts:["walked","was walking","walks","is walking"],a:1,why:"arrière-plan → was walking."}
+  ]},
+  { key:"usedto", level:"B1", title:"used to (habitude passée)", rule:"used to + base = habitude passée révolue. Négatif : didn't use to.", items:[
+    {q:"I ___ smoke, but I stopped.",opts:["use to","used to","am used to","used"],a:1,why:"habitude passée → used to."},
+    {q:"She ___ like coffee when she was young.",opts:["didn't used to","didn't use to","doesn't use to","not used to"],a:1,why:"négatif → didn't use to."},
+    {q:"___ you use to play tennis?",opts:["Did","Do","Were","Have"],a:0,why:"question → Did you use to…?"}
+  ]},
+  { key:"asas", level:"B1", title:"as … as (égalité)", rule:"as + adjectif + as = égalité. not as … as = infériorité.", items:[
+    {q:"He is ___ tall ___ his father.",opts:["so / as","as / as","as / than","more / as"],a:1,why:"égalité → as … as."},
+    {q:"This film isn't ___ good ___ the first one.",opts:["as / as","so / than","as / than","more / as"],a:0,why:"not as … as."},
+    {q:"She runs ___ fast ___ me.",opts:["as / than","so / as","as / as","more / than"],a:2,why:"égalité → as fast as."}
+  ]},
+  { key:"tooenough", level:"B1", title:"too / enough", rule:"too + adjectif (trop). adjectif + enough (assez). enough + nom.", items:[
+    {q:"This coffee is ___ hot to drink.",opts:["enough","too","very much","so much"],a:1,why:"trop → too hot."},
+    {q:"He isn't old ___ to drive.",opts:["too","enough","very","so"],a:1,why:"assez → old enough."},
+    {q:"We don't have ___ time.",opts:["enough","too","too much","many"],a:0,why:"enough + nom → enough time."}
+  ]},
+  { key:"haveto", level:"B1", title:"have to / don't have to", rule:"have to = obligation. don't have to = pas nécessaire.", items:[
+    {q:"You ___ wear a uniform at this school.",opts:["have to","have","must to","are to"],a:0,why:"obligation → have to."},
+    {q:"She ___ work on Sundays. (pas nécessaire)",opts:["mustn't","doesn't have to","don't have to","hasn't to"],a:1,why:"pas nécessaire → doesn't have to."},
+    {q:"___ we bring our passports?",opts:["Do we have to","Have we to","Must to","Are we have to"],a:0,why:"question → Do we have to…?"}
+  ]},
+  { key:"willmight", level:"B1", title:"will / might (probabilité)", rule:"will = quasi-certain. might = possible (peut-être).", items:[
+    {q:"Take an umbrella, it ___ rain later.",opts:["will definitely","might","must","won't"],a:1,why:"possibilité → might."},
+    {q:"I'm sure she ___ pass the exam.",opts:["might","will","might not","may not"],a:1,why:"certitude → will."},
+    {q:"I'm not sure, I ___ come to the party.",opts:["will","won't","might","must"],a:2,why:"incertitude → might."}
+  ]},
+  { key:"cond1", level:"B1", title:"First conditional", rule:"If + présent, will + base (situation réelle future).", items:[
+    {q:"If it rains, we ___ at home.",opts:["stay","will stay","stayed","would stay"],a:1,why:"type 1 → will stay."},
+    {q:"If you ___ hard, you'll pass.",opts:["will study","study","studied","studies"],a:1,why:"if + présent → study."},
+    {q:"She'll be angry if you ___ late.",opts:["will be","are","were","be"],a:1,why:"if + présent → are."}
+  ]},
+  { key:"gerinf", level:"B1", title:"Gérondif vs infinitif", rule:"want/need/decide + to + base. enjoy/finish/avoid + -ing.", items:[
+    {q:"I want ___ a doctor.",opts:["seeing","to see","see","saw"],a:1,why:"want + to → to see."},
+    {q:"She finished ___ her homework.",opts:["to do","doing","do","does"],a:1,why:"finish + -ing → doing."},
+    {q:"They decided ___ early.",opts:["leaving","to leave","leave","left"],a:1,why:"decide + to → to leave."}
+  ]},
+  { key:"tags", level:"B1", title:"Question tags", rule:"Phrase affirmative → tag négatif (…, isn't it?). Phrase négative → tag positif.", items:[
+    {q:"You're French, ___?",opts:["isn't it","aren't you","are you","don't you"],a:1,why:"You're → aren't you."},
+    {q:"She can swim, ___?",opts:["can't she","can she","doesn't she","isn't she"],a:0,why:"can → can't she."},
+    {q:"They don't live here, ___?",opts:["don't they","do they","aren't they","are they"],a:1,why:"négatif → do they."}
+  ]},
+  { key:"passive", level:"B1", title:"Passif (présent / passé)", rule:"be + participe passé. The house was built in 1990.", items:[
+    {q:"English ___ all over the world.",opts:["speaks","is spoken","is speaking","speak"],a:1,why:"passif présent → is spoken."},
+    {q:"The bridge ___ last year.",opts:["was built","built","is built","builds"],a:0,why:"passif passé → was built."},
+    {q:"These cars ___ in Japan.",opts:["make","are made","is made","made"],a:1,why:"pluriel passif → are made."}
+  ]},
+  { key:"sosuch", level:"B1", title:"so / such", rule:"so + adjectif/adverbe. such + (a/an) + (adj) + nom.", items:[
+    {q:"It was ___ a good film.",opts:["so","such","very","too"],a:1,why:"such + a + nom → such a good film."},
+    {q:"She is ___ kind.",opts:["such","so","such a","a so"],a:1,why:"so + adjectif → so kind."},
+    {q:"They have ___ nice children.",opts:["so","such","such a","a such"],a:1,why:"such + nom pluriel → such nice children."}
+  ]},
+  { key:"advmanner", level:"B1", title:"Adverbes de manière", rule:"adjectif + -ly (quick → quickly). Irréguliers : good → well, fast → fast.", items:[
+    {q:"He speaks English very ___.",opts:["good","well","goodly","best"],a:1,why:"adverbe de good → well."},
+    {q:"She drives too ___.",opts:["fastly","fast","quick","speedy"],a:1,why:"fast est déjà adverbe → fast."},
+    {q:"Please listen ___.",opts:["careful","carefully","carefuly","care"],a:1,why:"careful → carefully."}
+  ]},
+  { key:"prepverb", level:"B1", title:"Verbe + préposition", rule:"Prépositions fixes : depend on, listen to, wait for, look at.", items:[
+    {q:"It depends ___ the weather.",opts:["of","on","to","from"],a:1,why:"depend on."},
+    {q:"I'm waiting ___ the bus.",opts:["for","to","at","on"],a:0,why:"wait for."},
+    {q:"Listen ___ me!",opts:["at","to","for","on"],a:1,why:"listen to."}
+  ]},
+  { key:"quantB1", level:"B1", title:"a few / a little", rule:"a few + dénombrable pluriel. a little + indénombrable.", items:[
+    {q:"I have ___ friends in London.",opts:["a little","a few","much","little"],a:1,why:"dénombrable → a few."},
+    {q:"Add ___ salt to the soup.",opts:["a few","a little","many","few"],a:1,why:"indénombrable → a little."},
+    {q:"There are ___ apples left.",opts:["a little","a few","much","little"],a:1,why:"dénombrable → a few."}
+  ]},
+
+  /* ===================== B2 (compléments) ===================== */
+  { key:"cond2", level:"B2", title:"Second conditional", rule:"If + prétérit, would + base (hypothèse irréelle du présent).", items:[
+    {q:"If I ___ rich, I would travel.",opts:["am","was","were","will be"],a:2,why:"2e conditionnel → If I were."},
+    {q:"She would help if she ___ time.",opts:["has","had","have","would have"],a:1,why:"if + prétérit → had."},
+    {q:"What would you do if you ___ the lottery?",opts:["win","won","will win","have won"],a:1,why:"if + prétérit → won."}
+  ]},
+  { key:"cond3", level:"B2", title:"Third conditional", rule:"If + past perfect, would have + participe (hypothèse irréelle du passé).", items:[
+    {q:"If I had known, I ___ you.",opts:["would tell","would have told","told","will tell"],a:1,why:"3e conditionnel → would have told."},
+    {q:"She would have passed if she ___ harder.",opts:["studied","had studied","would study","studies"],a:1,why:"if + past perfect → had studied."},
+    {q:"If they ___ earlier, they wouldn't have missed the train.",opts:["left","had left","would leave","have left"],a:1,why:"if + past perfect → had left."}
+  ]},
+  { key:"pastperf", level:"B2", title:"Past perfect", rule:"had + participe = action antérieure à une autre action passée.", items:[
+    {q:"When we arrived, the film ___.",opts:["already started","had already started","starts","was starting"],a:1,why:"antériorité → had already started."},
+    {q:"He told me he ___ the keys.",opts:["lost","had lost","has lost","loses"],a:1,why:"antérieur → had lost."},
+    {q:"She ___ never eaten sushi before that day.",opts:["has","had","did","was"],a:1,why:"past perfect → had (never eaten)."}
+  ]},
+  { key:"perfectcont", level:"B2", title:"Present perfect continuous", rule:"have/has been + -ing = action commencée avant et qui continue.", items:[
+    {q:"I ___ for two hours.",opts:["have been waiting","have waited","am waiting","wait"],a:0,why:"durée en cours → have been waiting."},
+    {q:"She's tired because she ___ all day.",opts:["has worked","has been working","works","is working"],a:1,why:"activité prolongée → has been working."},
+    {q:"How long ___ you ___ English?",opts:["have / learnt","have / been learning","did / learn","are / learning"],a:1,why:"durée continue → have you been learning."}
+  ]},
+  { key:"reported", level:"B2", title:"Discours indirect", rule:"Le présent recule au passé : « I am tired » → He said he was tired.", items:[
+    {q:"« I am busy. » → She said she ___ busy.",opts:["is","was","were","has been"],a:1,why:"présent → passé : was."},
+    {q:"« I will call you. » → He said he ___ call me.",opts:["will","would","will to","would to"],a:1,why:"will → would."},
+    {q:"« I saw them. » → She said she ___ them.",opts:["saw","had seen","has seen","sees"],a:1,why:"prétérit → had seen."}
+  ]},
+  { key:"passiveadv", level:"B2", title:"Passif (temps composés)", rule:"has been done, is being done, will be done.", items:[
+    {q:"The report ___ (déjà terminé).",opts:["has been finished","has finished","is finish","was finish"],a:0,why:"present perfect passif → has been finished."},
+    {q:"The road ___ right now.",opts:["is repaired","is being repaired","repairs","was repairing"],a:1,why:"présent continu passif → is being repaired."},
+    {q:"The results ___ tomorrow.",opts:["will announce","will be announced","are announcing","announce"],a:1,why:"futur passif → will be announced."}
+  ]},
+  { key:"causative", level:"B2", title:"Causatif (have sth done)", rule:"have/get + objet + participe passé = faire faire qch par un tiers.", items:[
+    {q:"I had my car ___ yesterday.",opts:["repaired","repair","repairing","to repair"],a:0,why:"have + objet + participe → had my car repaired."},
+    {q:"She's going to have her hair ___ tomorrow.",opts:["cut","cutting","to cut","cuts"],a:0,why:"have + objet + participe → have her hair cut."},
+    {q:"We need to get the windows ___.",opts:["cleaned","clean","cleaning","to clean"],a:0,why:"get + objet + participe → get the windows cleaned."}
+  ]},
+  { key:"deduction", level:"B2", title:"Modaux de déduction", rule:"must be (certitude +), can't be (certitude −), might/could be (possibilité).", items:[
+    {q:"He isn't answering; he ___ be asleep.",opts:["must","can't","mustn't","would"],a:0,why:"déduction quasi-certaine → must."},
+    {q:"That ___ be true, it's impossible!",opts:["must","might","can't","could"],a:2,why:"certitude négative → can't."},
+    {q:"She ___ be at work, I'm not sure.",opts:["must","might","can't","won't"],a:1,why:"possibilité → might."}
+  ]},
+  { key:"modalspast", level:"B2", title:"Modaux au passé", rule:"should have + participe (regret), must have (déduction), can't have (impossibilité).", items:[
+    {q:"You ___ told me! I was worried.",opts:["should have","must have","can't have","would"],a:0,why:"reproche → should have told."},
+    {q:"The ground is wet; it ___ rained.",opts:["should have","must have","can't have","would have"],a:1,why:"déduction passée → must have rained."},
+    {q:"She ___ seen him; he was abroad.",opts:["must have","should have","can't have","would have"],a:2,why:"impossibilité passée → can't have seen."}
+  ]},
+  { key:"wish", level:"B2", title:"wish / if only", rule:"wish + prétérit (regret présent). wish + past perfect (regret passé). wish + would (agacement).", items:[
+    {q:"I wish I ___ more time.",opts:["have","had","will have","would have"],a:1,why:"regret présent → wish + prétérit : had."},
+    {q:"She wishes she ___ harder for the exam.",opts:["studied","had studied","studies","would study"],a:1,why:"regret passé → wish + past perfect."},
+    {q:"I wish it ___ raining!",opts:["stops","stopped","would stop","will stop"],a:2,why:"agacement → wish + would."}
+  ]},
+  { key:"relativeadv", level:"B2", title:"Relatives (whose / non-défini)", rule:"whose = dont (possession). Relatives non essentielles : virgules + which (pas that).", items:[
+    {q:"That's the woman ___ car was stolen.",opts:["who","whose","which","that"],a:1,why:"possession → whose."},
+    {q:"My brother, ___ lives in Rome, is a chef.",opts:["that","which","who","whose"],a:2,why:"non-défini + personne → who."},
+    {q:"Paris, ___ is the capital of France, is beautiful.",opts:["that","which","who","whose"],a:1,why:"non-défini + chose → which."}
+  ]},
+  { key:"gerinfadv", level:"B2", title:"Gérondif / infinitif (sens)", rule:"stop to do (s'arrêter pour) ≠ stop doing (arrêter de). remember to do ≠ remember doing.", items:[
+    {q:"He stopped ___ a cigarette. (il s'arrête pour fumer)",opts:["smoking","to smoke","smoke","smoked"],a:1,why:"but → stop to smoke."},
+    {q:"Remember ___ the door when you leave.",opts:["locking","to lock","lock","locked"],a:1,why:"tâche future → remember to lock."},
+    {q:"I'll never forget ___ the Eiffel Tower for the first time.",opts:["to see","seeing","see","saw"],a:1,why:"souvenir → forget seeing."}
+  ]},
+  { key:"futureperf", level:"B2", title:"Futur antérieur / continu", rule:"will have + participe (terminé avant un moment futur). will be + -ing (en cours dans le futur).", items:[
+    {q:"By 2030, I ___ my studies.",opts:["will finish","will have finished","finish","am finishing"],a:1,why:"terminé avant → will have finished."},
+    {q:"This time tomorrow, I ___ on a beach.",opts:["will lie","will be lying","lie","have lain"],a:1,why:"en cours dans le futur → will be lying."},
+    {q:"They ___ the project by Friday.",opts:["will have completed","will completing","complete","are completing"],a:0,why:"achèvement futur → will have completed."}
+  ]},
+  { key:"inversion", level:"B2", title:"Inversion", rule:"Adverbe négatif en tête (Never, Rarely, Not only…) → inversion sujet/auxiliaire.", items:[
+    {q:"Never ___ such a beautiful sunset.",opts:["I have seen","have I seen","I saw","did I saw"],a:1,why:"inversion → have I seen."},
+    {q:"Rarely ___ so happy.",opts:["she is","is she","she has","does she is"],a:1,why:"inversion → is she."},
+    {q:"Not only ___ late, but he also forgot the tickets.",opts:["he was","was he","he is","did he was"],a:1,why:"inversion → was he."}
+  ]},
+  { key:"purpose", level:"B2", title:"Expression du but", rule:"to / in order to + base. so that + proposition.", items:[
+    {q:"She left early ___ catch the train.",opts:["for","to","for to","that"],a:1,why:"but → to catch."},
+    {q:"I wrote it down ___ I wouldn't forget.",opts:["to","for","so that","in order"],a:2,why:"but + proposition → so that."},
+    {q:"He spoke slowly ___ everyone could understand.",opts:["to","so that","for","in order to"],a:1,why:"but + proposition → so that."}
+  ]},
+  { key:"contrast", level:"B2", title:"Contraste (although/despite)", rule:"although + proposition. despite / in spite of + nom ou -ing. however = cependant.", items:[
+    {q:"___ it was raining, we went out.",opts:["Despite","Although","In spite","However"],a:1,why:"+ proposition → Although."},
+    {q:"___ the rain, we went out.",opts:["Although","Despite","Even though","However"],a:1,why:"+ nom → Despite."},
+    {q:"It was expensive. ___, we bought it.",opts:["Although","Despite","However","In spite of"],a:2,why:"relie deux phrases → However."}
+  ]},
+  { key:"quantadv", level:"B2", title:"Quantifieurs avancés", rule:"few/little (peu, négatif) ≠ a few/a little (un peu, positif). plenty of (beaucoup).", items:[
+    {q:"He has ___ friends; he's quite lonely.",opts:["a few","few","a little","much"],a:1,why:"sens négatif → few."},
+    {q:"Don't worry, we have ___ of time.",opts:["few","little","plenty","many"],a:2,why:"beaucoup → plenty of."},
+    {q:"There's ___ hope of winning now.",opts:["a little","little","few","a few"],a:1,why:"sens négatif indénombrable → little."}
+  ]},
+  { key:"articlesadv", level:"B2", title:"Articles avancés", rule:"Ø : noms généraux, langues, la plupart des pays. the : océans/fleuves, chaînes (the Alps).", items:[
+    {q:"She's learning ___ Japanese.",opts:["the","a","an","—"],a:3,why:"langue → pas d'article."},
+    {q:"We sailed across ___ Atlantic.",opts:["—","the","a","an"],a:1,why:"océan → the Atlantic."},
+    {q:"___ love is important.",opts:["The","A","—","An"],a:2,why:"nom abstrait général → pas d'article."}
+  ]}
+];
+
+/* =========================================================================
+   State + persistence
+   ========================================================================= */
+const DEFAULT_STATE = {streak:0, lastVisit:null, known:{}, lessonsDone:{}, xp:0, gamesPlayed:0, speakBest:0, readDaily:{}, readLog:[], daysDone:{}, level:"B1", gen:{done:0, skill:{}, history:[]}, featureUse:{}, appDaily:{}, sessions:0, gamesDone:{}, gamesUnlocked:1, vocabLevel:{}};
+const AVATARS = ["🎧","🦊","🐼","🚀","🌟","🐱","🦉","🐝","🎨","🐬","🍀","⚡","🌈","🐧","🦁","🎯"];
+const PCOLORS = ["#E4552A","#1C8A73","#D99A20","#4C6FE0","#B0479B","#2AA0C4","#E0663D","#6C8B2E"];
+
+/* ---- Base de données emails ----
+   Option A (active) : Google Sheets via Apps Script — colle ici l'URL de déploiement (…/exec). */
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbz7AXrSIgmAjSCPmuO4ALUaJlrD6IhthDhthFc1_vvE4t1bIWvqrwsEMxAq_1j6Ycg/exec";
+/* Option B (plus tard) : Supabase. La clé "anon" est publique ; la sécurité vient des politiques RLS. */
+const SUPABASE_URL = "";       // ex : https://abcxyz.supabase.co
+const SUPABASE_ANON_KEY = "";  // clé "anon public"
+const SUPABASE_TABLE = "app_users";
+
+/* ---- Profils : chaque profil a son propre état de progression ---- */
+const PKEY="fluentlab_profiles";
+function skey(id){ return "fluentlab_state_"+id; }
+function uid(){ return "p"+Math.random().toString(36).slice(2,9); }
+function normalizeState(s){
+  const st=Object.assign({}, DEFAULT_STATE, s||{});
+  st.gen=Object.assign({done:0,skill:{},history:[]}, st.gen||{});
+  st.gen.skill=Object.assign({}, st.gen.skill);
+  st.gen.history=(st.gen.history||[]).slice();
+  st.featureUse=Object.assign({}, st.featureUse);
+  st.appDaily=Object.assign({}, st.appDaily);
+  st.sessions=st.sessions||0;
+  st.gamesDone=Object.assign({}, st.gamesDone);
+  st.gamesUnlocked=st.gamesUnlocked||1;
+  st.vocabLevel=Object.assign({}, st.vocabLevel);
+  return st;
+}
+function loadProfiles(){
+  try{ const p=JSON.parse(localStorage.getItem(PKEY)); if(p&&p.list&&p.list.length) return p; }catch(e){}
+  return null;
+}
+function saveProfiles(){ try{ localStorage.setItem(PKEY, JSON.stringify(profiles)); }catch(e){} }
+function activeProfile(){ return profiles.list.find(p=>p.id===profiles.active)||profiles.list[0]; }
+function loadStateFor(id){
+  try{ const s=JSON.parse(localStorage.getItem(skey(id))); if(s) return normalizeState(s); }catch(e){}
+  return normalizeState(null);
+}
+
+let profiles = loadProfiles();
+if(!profiles){
+  // Migration : bascule l'ancienne progression unique dans un premier profil.
+  const id=uid();
+  profiles={ list:[{id, name:"Moi", emoji:"🎧", color:PCOLORS[0]}], active:id };
+  const old=localStorage.getItem("fluentlab");
+  if(old){ try{ localStorage.setItem(skey(id), old); }catch(e){} }
+  saveProfiles();
+}
+let state = loadStateFor(profiles.active);
+
+function save(){ try{ localStorage.setItem(skey(profiles.active), JSON.stringify(state)); }catch(e){} }
+function addXP(n){ state.xp += n; state.daysDone[todayKey()]=true; state.streak=computeStreak(); updateStreakBadge(); save(); }
+
+/* ---- Gestion des profils ---- */
+function switchProfile(id){
+  if(id===profiles.active) return;
+  save();
+  profiles.active=id; saveProfiles();
+  state=loadStateFor(id);
+  state.lastVisit=new Date().toDateString(); state.streak=computeStreak(); save();
+  updateStreakBadge(); renderProfileBadge();
+  go("home");
+  requireEmail();
+}
+function createProfile(name){
+  const id=uid();
+  const emoji=AVATARS[profiles.list.length % AVATARS.length];
+  const color=PCOLORS[profiles.list.length % PCOLORS.length];
+  profiles.list.push({id, name:name||"Nouveau profil", emoji, color});
+  saveProfiles();
+  switchProfile(id);
+}
+function renameProfile(id, name){ const p=profiles.list.find(x=>x.id===id); if(p&&name){ p.name=name; saveProfiles(); renderProfileBadge(); } }
+function setProfileAvatar(id, emoji, color){ const p=profiles.list.find(x=>x.id===id); if(p){ if(emoji)p.emoji=emoji; if(color)p.color=color; saveProfiles(); renderProfileBadge(); } }
+function deleteProfile(id){
+  if(profiles.list.length<=1) return;
+  try{ localStorage.removeItem(skey(id)); }catch(e){}
+  profiles.list=profiles.list.filter(p=>p.id!==id);
+  if(profiles.active===id){ profiles.active=profiles.list[0].id; state=loadStateFor(profiles.active); }
+  saveProfiles(); save(); updateStreakBadge();
+}
+
+/* ---- Interface des profils ---- */
+function renderProfileBadge(){
+  const a=activeProfile(); if(!a) return;
+  const av=document.getElementById("profAvatar"), nm=document.getElementById("profName"), btn=document.getElementById("profBtn");
+  if(av) av.textContent=a.emoji;
+  if(nm) nm.textContent=a.name;
+  if(btn) btn.style.setProperty("--pcolor", a.color);
+}
+function openProfiles(){
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal-overlay" id="ov">
+    <div class="modal" role="dialog" aria-label="Profils">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+        <h3 style="font-size:1.2rem">Profils</h3>
+        <button class="icon-btn" id="closeProf" aria-label="Fermer">✕</button>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.85rem;margin:0 0 14px">Chaque profil garde sa propre progression sur cet appareil. Clique un avatar pour le changer.</p>
+      <div id="profList" class="prof-list"></div>
+      <div class="row" style="margin-top:14px;gap:8px">
+        <input id="newProfName" class="txt" placeholder="Nom du nouveau profil" maxlength="24">
+        <button class="btn accent small" id="addProf">+ Créer</button>
+      </div>
+    </div></div>`;
+  drawProfList();
+  document.getElementById("closeProf").onclick=closeProfiles;
+  document.getElementById("ov").onclick=e=>{ if(e.target.id==="ov") closeProfiles(); };
+  document.getElementById("addProf").onclick=()=>{ const n=document.getElementById("newProfName").value.trim(); createProfile(n||("Profil "+(profiles.list.length+1))); closeProfiles(); };
+  document.getElementById("newProfName").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("addProf").click(); });
+}
+function closeProfiles(){ const r=document.getElementById("modalRoot"); if(r) r.innerHTML=""; }
+function drawProfList(){
+  const box=document.getElementById("profList"); if(!box) return;
+  box.innerHTML=profiles.list.map(p=>{
+    const act=p.id===profiles.active;
+    return `<div class="prof-row ${act?"active":""}">
+      <button class="prof-ava" data-ava="${p.id}" title="Changer l'avatar" style="background:${p.color}">${p.emoji}</button>
+      <div style="flex:1;min-width:0">
+        <input class="prof-name-input" data-name="${p.id}" value="${esc(p.name)}" maxlength="24" aria-label="Nom du profil">
+        <input class="txt prof-email-input" data-email="${p.id}" type="email" autocomplete="email" placeholder="email (facultatif)" value="${esc(p.email||"")}" aria-label="Email" style="margin-top:5px;padding:5px 9px;font-size:.8rem;width:100%">
+      </div>
+      ${act?"":`<button class="btn ghost small" data-switch="${p.id}">Activer</button>`}
+      ${profiles.list.length>1?`<button class="icon-btn" data-del="${p.id}" title="Supprimer" aria-label="Supprimer">🗑</button>`:""}
+    </div>`;
+  }).join("");
+  box.querySelectorAll("[data-switch]").forEach(b=>b.onclick=()=>{ switchProfile(b.dataset.switch); closeProfiles(); });
+  box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ const p=profiles.list.find(x=>x.id===b.dataset.del); if(confirm("Supprimer le profil « "+p.name+" » et toute sa progression ? Cette action est définitive.")){ deleteProfile(b.dataset.del); drawProfList(); } });
+  box.querySelectorAll("[data-name]").forEach(inp=>inp.onchange=()=>renameProfile(inp.dataset.name, inp.value.trim()));
+  box.querySelectorAll("[data-email]").forEach(inp=>inp.onchange=()=>saveEmail(inp.dataset.email, inp.value));
+  box.querySelectorAll("[data-ava]").forEach(b=>b.onclick=()=>cycleAvatar(b.dataset.ava));
+}
+function cycleAvatar(id){
+  const p=profiles.list.find(x=>x.id===id); if(!p) return;
+  const ni=(AVATARS.indexOf(p.emoji)+1+AVATARS.length)%AVATARS.length;
+  const ci=(PCOLORS.indexOf(p.color)+1+PCOLORS.length)%PCOLORS.length;
+  setProfileAvatar(id, AVATARS[ni], PCOLORS[ci]); drawProfList();
+}
+
+/* ---- Collecte des emails (Supabase) ---- */
+function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function saveEmail(id, email){
+  const p=profiles.list.find(x=>x.id===id); if(!p) return false;
+  email=(email||"").trim().toLowerCase();
+  if(email && !validEmail(email)){ toast("Email invalide"); return false; }
+  p.email=email; saveProfiles();
+  if(email && p.emailSynced!==email) syncEmail(p);
+  if(email) setTimeout(syncStats, 400);
+  return true;
+}
+function backendReady(){ return !!SHEET_ENDPOINT || (!!SUPABASE_URL && !!SUPABASE_ANON_KEY); }
+function markSynced(p){ p.emailSynced=p.email; saveProfiles(); }
+function syncEmail(p){
+  if(!p.email) return;
+  const payload={ email:p.email, name:p.name, level:state.level };
+  if(SHEET_ENDPOINT){
+    // Corps texte simple => pas de prévol CORS ; Apps Script lit e.postData.contents.
+    fetch(SHEET_ENDPOINT,{ method:"POST", body:JSON.stringify(payload) })
+      .then(r=>r.json()).then(j=>{ if(j&&j.ok) markSynced(p); }).catch(()=>{});
+    return;
+  }
+  if(SUPABASE_URL && SUPABASE_ANON_KEY){
+    fetch(SUPABASE_URL.replace(/\/$/,"")+"/rest/v1/"+SUPABASE_TABLE+"?on_conflict=email",{
+      method:"POST",
+      headers:{ "apikey":SUPABASE_ANON_KEY, "Authorization":"Bearer "+SUPABASE_ANON_KEY, "Content-Type":"application/json", "Prefer":"return=minimal,resolution=ignore-duplicates" },
+      body: JSON.stringify(payload)
+    }).then(r=>{ if(r.ok) markSynced(p); }).catch(()=>{});
+  }
+}
+function syncAllPending(){ if(!backendReady()) return; profiles.list.forEach(p=>{ if(p.email && p.emailSynced!==p.email) syncEmail(p); }); }
+
+/* ---- Analytics : fonctionnalités utilisées + temps passé ---- */
+const FEAT_LABEL={home:"Accueil",progress:"Progrès",path:"Parcours",vocab:"Vocabulaire",grammar:"Grammaire",games:"Jeux",dialogue:"Conversation",speak:"Prononciation",reading:"Lecture",shadow:"Shadowing",talk:"Élocution"};
+function statsPayload(){
+  const p=activeProfile();
+  const ad=state.appDaily||{};
+  const days=Object.keys(ad).length||1;
+  const totalSec=Object.keys(ad).reduce((a,k)=>a+(ad[k]||0),0);
+  const fu=state.featureUse||{};
+  const feats=Object.keys(fu).sort((a,b)=>fu[b]-fu[a]).map(k=>(FEAT_LABEL[k]||k)+" ("+fu[k]+")").join(", ");
+  return { type:"stats", email:(p&&p.email)||"", name:(p&&p.name)||"", level:state.level,
+    features:feats, total_min:Math.round(totalSec/60), days:days,
+    avg_day_min:Math.round(totalSec/60/days*10)/10, sessions:state.sessions||0,
+    avg_session_min:state.sessions?Math.round(totalSec/60/state.sessions*10)/10:0,
+    last_seen:new Date().toISOString() };
+}
+function syncStats(){ const p=activeProfile(); if(!p||!p.email||!SHEET_ENDPOINT) return; fetch(SHEET_ENDPOINT,{method:"POST",body:JSON.stringify(statsPayload())}).catch(()=>{}); }
+function syncStatsBeacon(){ const p=activeProfile(); if(!p||!p.email||!SHEET_ENDPOINT) return; try{ navigator.sendBeacon(SHEET_ENDPOINT, JSON.stringify(statsPayload())); }catch(e){} }
+function trackFeature(view){ if(!state.featureUse) state.featureUse={}; state.featureUse[view]=(state.featureUse[view]||0)+1; save(); }
+function promptEmail(){
+  const p=activeProfile(); if(!p) return;
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal-overlay" id="ov"><div class="modal" role="dialog" aria-label="Email">
+    <h3 style="font-size:1.2rem;margin-bottom:6px">Reste connecté 👋</h3>
+    <p style="color:var(--ink-soft);font-size:.9rem;margin:0 0 14px">Laisse ton email pour sauvegarder ta progression et être informé des nouveautés de Fluent Lab. C'est facultatif — tu peux le retirer à tout moment dans ton profil.</p>
+    <input id="emailIn" class="txt" type="email" autocomplete="email" placeholder="ton@email.com" style="width:100%">
+    <div class="row" style="margin-top:14px;justify-content:flex-end">
+      <button class="btn ghost" id="emailSkip">Plus tard</button>
+      <button class="btn accent" id="emailSave">Enregistrer</button>
+    </div>
+    <div style="font-size:.72rem;color:var(--ink-soft);margin-top:10px">🔒 Utilisé uniquement par Fluent Lab. Aucune revente à des tiers.</div>
+  </div></div>`;
+  const dismiss=()=>{ p.emailPrompted=true; saveProfiles(); closeProfiles(); };
+  document.getElementById("emailSkip").onclick=dismiss;
+  document.getElementById("emailSave").onclick=()=>{ if(saveEmail(p.id, document.getElementById("emailIn").value)){ p.emailPrompted=true; saveProfiles(); toast("Merci ! 🎉"); closeProfiles(); } };
+  document.getElementById("emailIn").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("emailSave").click(); });
+}
+function maybePromptEmail(){ const p=activeProfile(); if(p && !p.email && !p.emailPrompted) setTimeout(promptEmail,900); }
+
+/* ---- Accès conditionné à un email valide ---- */
+function requireEmail(){ if(location.protocol==="file:") return; /* pas de porte en local (toi) */ const p=activeProfile(); if(p && !p.email) showGate(); }
+function closeGate(){ const r=document.getElementById("modalRoot"); if(r) r.innerHTML=""; }
+function showGate(){
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal-overlay gate" id="gateOv"><div class="modal">
+    <div style="text-align:center">
+      <div style="font-size:2rem">🎙️</div>
+      <h3 style="font-size:1.4rem;margin:6px 0 4px;letter-spacing:-.01em">Bienvenue sur Fluent Lab</h3>
+      <p style="color:var(--ink-soft);font-size:.9rem;margin:0 auto;max-width:34ch">Entre ton email pour commencer à t'entraîner et sauvegarder ta progression.</p>
+    </div>
+    <input id="gateEmail" class="txt" type="email" autocomplete="email" placeholder="ton@email.com" style="width:100%;margin-top:16px">
+    <div class="feedback" id="gateErr" style="margin-top:8px"></div>
+    <button class="btn accent" id="gateGo" style="width:100%;margin-top:12px">Commencer →</button>
+    <div style="font-size:.72rem;color:var(--ink-soft);margin-top:12px;text-align:center">🔒 Utilisé uniquement par Fluent Lab. Aucune revente à des tiers.</div>
+  </div></div>`;
+  const submit=()=>{
+    const v=(document.getElementById("gateEmail").value||"").trim().toLowerCase();
+    if(!validEmail(v)){ const e=document.getElementById("gateErr"); e.className="feedback show no"; e.textContent="Entre un email valide pour continuer."; return; }
+    const p=activeProfile(); saveEmail(p.id, v); p.emailPrompted=true; saveProfiles();
+    closeGate(); toast("Bienvenue ! 🎉");
+  };
+  document.getElementById("gateGo").onclick=submit;
+  document.getElementById("gateEmail").addEventListener("keydown",e=>{ if(e.key==="Enter") submit(); });
+  setTimeout(()=>{ const g=document.getElementById("gateEmail"); if(g) g.focus(); },120);
+}
+
+/* ---- Espace admin : compteur d'inscrits (geste caché : 5 clics sur le logo) ---- */
+function openAdmin(){
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal-overlay" id="ov"><div class="modal" role="dialog" aria-label="Admin">
+    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="font-size:1.2rem">👑 Espace admin</h3><button class="icon-btn" id="closeAdm" aria-label="Fermer">✕</button></div>
+    <p style="color:var(--ink-soft);font-size:.85rem;margin:0 0 10px">Aperçu de l'usage de Fluent Lab.</p>
+    <div class="row" style="justify-content:center;gap:22px;padding:6px 0 12px">
+      <div style="text-align:center"><div class="score-ring" id="admCount">…</div><div class="eyebrow">inscrits</div></div>
+      <div style="text-align:center"><div class="score-ring" id="admAvg">…</div><div class="eyebrow">min/jour moyen</div></div>
+    </div>
+    <div class="eyebrow">Top fonctionnalités utilisées</div>
+    <div id="admFeat" class="mbar" style="margin-top:10px"><div style="color:var(--ink-soft);font-size:.8rem">…</div></div>
+    <div class="eyebrow" style="margin-top:16px">Inscrits — 14 derniers jours</div>
+    <div id="admSignups" style="margin-top:8px"></div>
+    <p style="font-size:.78rem;color:var(--ink-soft);margin-top:14px">Détail par utilisateur dans l'onglet <b>« Stats »</b> de ta feuille Google.</p>
+    <div class="row" style="justify-content:center;margin-top:8px"><button class="btn ghost small" id="admRefresh">↻ Rafraîchir</button></div>
+  </div></div>`;
+  document.getElementById("closeAdm").onclick=closeGate;
+  document.getElementById("ov").onclick=e=>{ if(e.target.id==="ov") closeGate(); };
+  document.getElementById("admRefresh").onclick=loadCount;
+  loadCount();
+}
+function loadCount(){
+  const c=document.getElementById("admCount"), a=document.getElementById("admAvg");
+  const fbox=document.getElementById("admFeat"), sbox=document.getElementById("admSignups");
+  if(!c) return;
+  if(!SHEET_ENDPOINT){ c.textContent="—"; if(a) a.textContent="—"; return; }
+  c.textContent="…"; if(a) a.textContent="…";
+  fetch(SHEET_ENDPOINT).then(r=>r.json()).then(j=>{
+    c.textContent=(j&&typeof j.count==="number")?j.count:"?";
+    if(a) a.textContent=(j&&typeof j.avg_day_min==="number")?j.avg_day_min:"?";
+    if(fbox) fbox.innerHTML=renderFeatBars(j&&j.features);
+    if(sbox) sbox.innerHTML=renderSignupBars(j&&j.signups);
+  }).catch(()=>{ c.textContent="?"; if(a) a.textContent="?"; if(fbox) fbox.innerHTML=""; if(sbox) sbox.innerHTML=""; });
+}
+function renderFeatBars(features){
+  if(!features || !Object.keys(features).length) return `<div style="color:var(--ink-soft);font-size:.8rem">Pas encore de données.</div>`;
+  const arr=Object.keys(features).map(k=>[k,features[k]]).sort((x,y)=>y[1]-x[1]).slice(0,8);
+  const max=arr[0][1]||1;
+  return arr.map(([k,v])=>`<div class="r"><span style="font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(k)}</span><div class="track"><i style="width:${Math.round(v/max*100)}%;background:var(--accent)"></i></div><span class="pctv">${v}</span></div>`).join("");
+}
+function renderSignupBars(signups){
+  if(!signups || !signups.length) return `<div style="color:var(--ink-soft);font-size:.8rem">Pas encore de données.</div>`;
+  const total=signups.reduce((a,s)=>a+(s.n||0),0);
+  if(total===0) return `<div style="color:var(--ink-soft);font-size:.8rem">Les inscriptions par jour s'afficheront ici au fil des arrivées.</div>`;
+  const max=Math.max(1, ...signups.map(s=>s.n||0));
+  return `<div class="barc" style="height:90px">${signups.map(s=>`<div class="bar" title="${esc(String(s.d))} : ${s.n||0}"><i style="height:${Math.round((s.n||0)/max*100)}%"></i><small>${esc(String(s.d)).slice(0,2)}</small></div>`).join("")}</div>`;
+}
+
+/* ---- Adaptive level ---- */
+function levelName(l){ return l==="A2"?"Débutant":l==="B2"?"Avancé":"Intermédiaire"; }
+function levelRate(){ return state.level==="A2"?0.78:state.level==="B2"?1.0:0.9; }
+function byLevel(list){ const f=list.filter(x=>x.level===state.level); return f.length?f:list; }
+function activeReadings(){ return byLevel(READINGS); }
+function activeShadow(){ return byLevel(SHADOW); }
+function activeDeck(){ const all=VOCAB[vState.cat]||[]; const f=all.filter(w=>w.lvl===state.level); return f.length?f:all; }
+function setLevel(l){ if(state.level===l) return; state.level=l; vState.idx=0; rdState.idx=0; shState.idx=0; save(); if(renderers[curView]) renderers[curView](); }
+function levelPickerHTML(){
+  const L=[["A2","Débutant"],["B1","Intermédiaire"],["B2","Avancé"]];
+  return `<div class="seg" role="group" aria-label="Niveau">${L.map(x=>`<button class="seg-btn" data-lvl="${x[0]}" aria-pressed="${state.level===x[0]}">${x[1]} <span class="mono">${x[0]}</span></button>`).join("")}</div>`;
+}
+function suggestLevel(){
+  const ra=readingAvg();
+  const gl=levelSkills();
+  const gm=gl.length?Math.round(gl.reduce((s,gb)=>s+(state.lessonsDone[gb.key]||0),0)/gl.length):0;
+  const score = ra!=null ? Math.round(ra*0.7 + gm*0.3) : gm;
+  if(score>=88) return "B2";
+  if(score<62 && (ra!=null || gm>0)) return "A2";
+  return "B1";
+}
+
+function computeStreak(){
+  let s=0; const d=new Date();
+  if(!state.daysDone[d.toDateString()]) d.setDate(d.getDate()-1);
+  while(state.daysDone[d.toDateString()]){ s++; d.setDate(d.getDate()-1); }
+  return s;
+}
+function markDay(ds, val){
+  if(val) state.daysDone[ds]=true; else delete state.daysDone[ds];
+  state.streak=computeStreak(); save();
+}
+function updateStreakBadge(){ const e=document.getElementById("streakN"); if(e) e.textContent=state.streak; }
+(function initStreak(){
+  // Migration : conserve une série existante en la reportant sur les jours marqués.
+  if(Object.keys(state.daysDone).length===0 && state.streak>0 && state.lastVisit){
+    let d=new Date(state.lastVisit);
+    for(let i=0;i<state.streak;i++){ state.daysDone[d.toDateString()]=true; d.setDate(d.getDate()-1); }
+  }
+  state.lastVisit=new Date().toDateString();
+  state.streak=computeStreak(); save();
+})();
+
+/* =========================================================================
+   Speech helpers
+   ========================================================================= */
+let voices = [];
+function loadVoices(){ if('speechSynthesis' in window) voices = speechSynthesis.getVoices(); }
+loadVoices();
+if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+
+function speak(text, rate){
+  if(!('speechSynthesis' in window)){ toast("La synthèse vocale n'est pas disponible sur ce navigateur."); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = rate || levelRate();
+  const v = voices.find(x=>/en[-_]?US/i.test(x.lang)) || voices.find(x=>/^en/i.test(x.lang));
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SR_OK = !!SR;
+const IN_IFRAME = (function(){ try{ return window.self!==window.top; }catch(e){ return true; } })();
+function micHelpBody(){
+  return `Pour t'enregistrer (note + détection des erreurs), l'app doit tourner dans un <b>vrai onglet</b> de navigateur — l'aperçu intégré bloque le microphone.
+    <ol style="margin:8px 0 0;padding-left:20px;line-height:1.75;list-style:decimal">
+      <li>Ouvre le fichier <span class="mono">C:\\Users\\CE23\\fluent-lab.html</span> dans <b>Chrome</b> ou <b>Edge</b> (clic droit sur le fichier → Ouvrir avec).</li>
+      <li>Clique sur 🎤, puis <b>Autoriser</b> quand le navigateur demande l'accès au micro.</li>
+      <li>Toujours bloqué ? Clique sur le <b>🔒</b> à gauche de la barre d'adresse → Paramètres du site → Microphone → <b>Autoriser</b>, puis recharge la page.</li>
+    </ol>`;
+}
+
+function todayKey(){ return new Date().toDateString(); }
+function fmt(s){ return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+
+/* single utterance recorder (shadowing, prononciation) */
+function recordUtterance(target, cb){
+  if(!SR_OK){ cb.onError && cb.onError("unsupported"); return; }
+  let rec; try{ rec=new SR(); }catch(e){ cb.onError && cb.onError("fail"); return; }
+  rec.lang="en-US"; rec.interimResults=false; rec.maxAlternatives=1; let got=false;
+  cb.onStart && cb.onStart();
+  rec.onresult=e=>{ got=true; const h=e.results[0][0].transcript; cb.onScore && cb.onScore(scoreSpeech(target,h),h); };
+  rec.onerror=e=>{ cb.onError && cb.onError(e.error); };
+  rec.onend=()=>{ cb.onEnd && cb.onEnd(got); };
+  try{ rec.start(); }catch(e){ cb.onError && cb.onError("fail"); }
+}
+
+/* continuous session (reading, élocution) — auto-restarts while active */
+function startContinuousSession(cb){
+  const sess={active:true, transcript:"", rec:null, stop:function(){ this.active=false; if(this.rec){ try{this.rec.stop();}catch(e){} } }};
+  if(!SR_OK){ return sess; }
+  function build(){
+    let rec; try{ rec=new SR(); }catch(e){ cb.onError && cb.onError("fail"); return null; }
+    rec.lang="en-US"; rec.continuous=true; rec.interimResults=true;
+    rec.onresult=e=>{ let add=""; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) add+=e.results[i][0].transcript+" "; } if(add){ sess.transcript+=add; cb.onUpdate && cb.onUpdate(sess.transcript); } };
+    rec.onerror=e=>{ if(e.error==="not-allowed"||e.error==="service-not-allowed"){ sess.active=false; cb.onError && cb.onError(e.error); } };
+    rec.onend=()=>{ if(sess.active){ try{ rec.start(); }catch(e){} } };
+    return rec;
+  }
+  sess.rec=build(); if(sess.rec){ try{ sess.rec.start(); }catch(e){ cb.onError && cb.onError("fail"); } }
+  return sess;
+}
+
+function readingScore(passage, heard){
+  const pw=norm(passage).split(" ").filter(Boolean);
+  const hset=new Set(norm(heard).split(" ").filter(Boolean));
+  const seen=new Set(); const missed=[]; let hit=0;
+  pw.forEach(w=>{ if(hset.has(w)) hit++; else if(!seen.has(w) && w.length>1){ missed.push(w); seen.add(w); } });
+  return {pct: pw.length?Math.round(hit/pw.length*100):0, missed:missed.slice(0,30)};
+}
+
+/* normalise & compare */
+function norm(s){ return s.toLowerCase().replace(/[^a-z0-9\s']/g,"").replace(/\s+/g," ").trim(); }
+function scoreSpeech(target, heard){
+  const t = norm(target).split(" "), h = new Set(norm(heard).split(" "));
+  let hit=0; const marks = t.map(w=>{ const ok=h.has(w); if(ok)hit++; return {w,ok}; });
+  return {pct: Math.round(hit/t.length*100), marks};
+}
+
+/* =========================================================================
+   UI utilities
+   ========================================================================= */
+const $ = (s,el=document)=>el.querySelector(s);
+const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2600); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const spk = t => `<button class="speak-btn" data-speak="${esc(t)}">🔊 Écouter</button>`;
+
+/* =========================================================================
+   Router
+   ========================================================================= */
+const renderers = {home:renderHome, progress:renderProgress, path:renderPath, vocab:renderVocab, grammar:renderGrammar, games:renderGames, dialogue:renderDialogue, speak:renderSpeak, reading:renderReading, shadow:renderShadow, talk:renderTalk};
+let _run={sess:null, timer:null};
+let curView="home";
+function stopRunning(){
+  if(_run.timer){ clearInterval(_run.timer); _run.timer=null; }
+  if(_run.sess && _run.sess.stop){ _run.sess.stop(); } _run.sess=null;
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  if(typeof rdState!=="undefined" && rdState) rdState.running=false;
+  if(typeof tkState!=="undefined" && tkState) tkState.running=false;
+}
+function go(view){
+  stopRunning();
+  curView=view;
+  trackFeature(view);
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.view===view));
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $("#view-"+view).classList.add("active");
+  renderers[view]();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("#tabs").addEventListener("click",e=>{ const t=e.target.closest(".tab"); if(t) go(t.dataset.view); });
+
+/* global speak delegation */
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-speak]"); if(b){ speak(b.dataset.speak); }
+});
+/* global level picker delegation */
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-lvl]"); if(b){ setLevel(b.dataset.lvl); }
+});
+
+/* streak pill → progress */
+$("#streakPill").addEventListener("click",()=>go("progress"));
+/* profil */
+$("#profBtn").addEventListener("click", openProfiles);
+/* geste caché : 5 clics sur le logo → espace admin */
+(function(){ let n=0,t=null; const b=document.getElementById("brand"); if(b) b.addEventListener("click",()=>{ n++; clearTimeout(t); t=setTimeout(()=>{n=0;},1500); if(n>=5){ n=0; openAdmin(); } }); })();
+
+/* theme */
+$("#themeBtn").addEventListener("click",()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  const isDark = cur ? cur==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", isDark?"light":"dark");
+});
+
+/* =========================================================================
+   HOME
+   ========================================================================= */
+function renderHome(){
+  const v=$("#view-home");
+  const known = Object.keys(state.known).length;
+  const lessons = levelSkills().filter(gb=>state.lessonsDone[gb.key]!=null).length;
+  const readSec = state.readDaily[todayKey()]||0;
+  const readMin = Math.floor(readSec/60);
+  const hour = new Date().getHours();
+  const hello = hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
+  const phrase = SPEAK_LINES[Math.floor(Math.random()*SPEAK_LINES.length)];
+  v.innerHTML = `
+    <div class="card hero">
+      <div class="eyebrow">${hello} · prêt à parler anglais ?</div>
+      <h1>Ton studio pour parler anglais avec confiance.</h1>
+      <p class="lead">Entraîne-toi un peu chaque jour : lecture à haute voix, shadowing, prononciation notée, conversations et prise de parole improvisée.</p>
+      <div class="row" style="margin-top:16px;gap:12px"><span class="eyebrow" style="align-self:center">Ton niveau</span>${levelPickerHTML()}</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n mono">${state.streak}</div><div class="l">Jours de suite 🔥</div></div>
+        <div class="stat"><div class="n mono">${state.xp}</div><div class="l">Points XP</div></div>
+        <div class="stat"><div class="n mono">${readMin}<span style="font-size:.9rem">/10</span></div><div class="l">Min. lues aujourd'hui</div></div>
+        <div class="stat"><div class="n mono">${known}</div><div class="l">Mots appris</div></div>
+        <div class="stat"><div class="n mono">${lessons}/${levelSkills().length}</div><div class="l">Leçons ${state.level} faites</div></div>
+      </div>
+      <div class="phrase">
+        <div class="eyebrow">Phrase du jour</div>
+        <div class="en">${esc(phrase.en)}</div>
+        <div class="fr">${esc(phrase.fr)}</div>
+        <div style="margin-top:10px">${spk(phrase.en)}</div>
+      </div>
+    </div>
+    ${dailyReadCard()}
+    <div class="modules">
+      ${modCard("path","✦","Parcours — leçons générées","Une leçon personnalisée créée selon ta progression.")}
+      ${modCard("reading","▥","Lecture à haute voix","10 min/jour, note enregistrée + carnet d'erreurs.")}
+      ${modCard("shadow","◎","Shadowing","Écoute et répète pour copier le rythme et l'accent.")}
+      ${modCard("talk","◐","Élocution 1 min","Un sujet au hasard, improvise pendant une minute.")}
+      ${modCard("speak","●","Prononciation","Répète une phrase, l'app note ta précision.")}
+      ${modCard("vocab","▤","Vocabulaire","Cartes-mémo par thème, avec audio et exemples.")}
+      ${modCard("grammar","▦","Grammaire","Règles en français + exercices corrigés.")}
+      ${modCard("games","◆","Jeux","Associer, remettre en ordre, traduction éclair.")}
+      ${modCard("dialogue","◗","Conversation","Joue des dialogues réels : café, entretien, small talk.")}
+    </div>`;
+  v.querySelectorAll("[data-go]").forEach(c=>c.addEventListener("click",()=>go(c.dataset.go)));
+}
+function dailyReadCard(){
+  const sec=state.readDaily[todayKey()]||0;
+  const pct=Math.min(100,Math.round(sec/600*100));
+  const done=sec>=600;
+  return `<div class="card" style="padding:20px;margin-top:16px">
+    <div class="row" style="justify-content:space-between">
+      <div><div class="eyebrow">Objectif du jour</div><h3 style="font-size:1.12rem;margin-top:3px">10 minutes de lecture à haute voix</h3></div>
+      <div class="mono" style="font-size:1.3rem;font-weight:700">${fmt(sec)} <span style="color:var(--ink-soft);font-size:.75rem">/ 10:00</span></div>
+    </div>
+    <div class="progress" style="margin:12px 0 10px"><i style="width:${pct}%;background:${done?'var(--teal)':'var(--accent)'}"></i></div>
+    <div class="row" style="justify-content:space-between">
+      <span style="color:var(--ink-soft);font-size:.82rem">${done?'🎉 Objectif atteint, bravo !':'Lis un texte à voix haute pour avancer.'}</span>
+      <button class="btn accent small" data-go="reading">Lire maintenant →</button>
+    </div>
+  </div>`;
+}
+function modCard(view,ic,title,desc){
+  return `<button class="mod" data-go="${view}"><div class="ic">${ic}</div><h3>${title}</h3><p>${desc}</p></button>`;
+}
+
+/* =========================================================================
+   VOCAB — flashcards
+   ========================================================================= */
+let vState={idx:0, flipped:false};
+const VSIZE=6;
+function seededShuffle(arr, seed){
+  const a=arr.slice(); let s=(seed>>>0)||1;
+  function rnd(){ s|=0; s=s+0x6D2B79F5|0; let t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function vocabPool(){ const p=allWords().filter(w=>w.lvl===state.level); return p.length?p:allWords(); }
+function getVLevel(){ return (state.vocabLevel && state.vocabLevel[state.level]) || 1; }
+function setVLevel(n){ if(!state.vocabLevel) state.vocabLevel={}; state.vocabLevel[state.level]=Math.max(1,n); vState.idx=0; vState.flipped=false; save(); renderVocab(); }
+function vocabDeck(){
+  const P=vocabPool(); const n=getVLevel();
+  const per=Math.min(VSIZE, P.length);
+  const cycleLen=Math.max(1, Math.ceil(P.length/per));
+  const cycle=Math.floor((n-1)/cycleLen);
+  const posInCycle=(n-1)%cycleLen;
+  const order=seededShuffle(P, cycle+7);
+  const deck=[];
+  for(let i=0;i<per;i++) deck.push(order[(posInCycle*per+i)%order.length]);
+  return deck;
+}
+function vocabDeckDone(){ const d=vocabDeck(); return d.every(w=>state.known[w.en]); }
+function renderVocab(){
+  const v=$("#view-vocab");
+  const n=getVLevel();
+  const deck=vocabDeck();
+  const knownInDeck=deck.filter(w=>state.known[w.en]).length;
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Vocabulaire</h2><p>Des niveaux à l'infini : chaque niveau t'apporte un nouveau lot de mots à mémoriser.</p></div>${levelPickerHTML()}</div>
+    <div class="flash-wrap">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+        <button class="btn ghost small" id="vLevPrev" ${n<=1?"disabled":""}>← Niv. ${n-1}</button>
+        <div style="text-align:center"><div class="eyebrow">Niveau ${state.level} · ${knownInDeck}/${deck.length} connus</div><div class="mono" style="font-size:1.5rem;font-weight:700;line-height:1">${n} <span style="color:var(--ink-soft);font-size:.85rem">/ ∞</span></div></div>
+        <button class="btn accent small" id="vLevNext">Niv. ${n+1} →</button>
+      </div>
+      <div class="progress"><i id="vprog"></i></div>
+      <div class="flash" id="flash"><div class="flash-inner">
+        <div class="face front" id="ffront"></div>
+        <div class="face back" id="fback"></div>
+      </div></div>
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost small" id="vprev">← Précédent</button>
+        <div class="row">
+          <button class="btn ghost small" id="vreview">🔁 À revoir</button>
+          <button class="btn accent small" id="vknow">✓ Je connais</button>
+        </div>
+        <button class="btn ghost small" id="vnext">Suivant →</button>
+      </div>
+    </div>`;
+  $("#flash").addEventListener("click",e=>{ if(e.target.closest("[data-speak]"))return; vState.flipped=!vState.flipped; $("#flash").classList.toggle("flipped",vState.flipped); });
+  $("#vLevPrev").onclick=()=>{ if(n>1) setVLevel(n-1); };
+  $("#vLevNext").onclick=()=>setVLevel(n+1);
+  $("#vprev").onclick=()=>moveCard(-1);
+  $("#vnext").onclick=()=>moveCard(1);
+  $("#vknow").onclick=()=>markCard(true);
+  $("#vreview").onclick=()=>markCard(false);
+  drawCard();
+}
+function moveCard(d){ const list=vocabDeck(); vState.idx=(vState.idx+d+list.length)%list.length; vState.flipped=false; $("#flash").classList.remove("flipped"); drawCard(); }
+function markCard(known){
+  const list=vocabDeck(), w=list[vState.idx];
+  if(known){ if(!state.known[w.en]){ state.known[w.en]=1; addXP(2);} toast("Bien joué ! +2 XP"); }
+  else { delete state.known[w.en]; toast("On la reverra 🔁"); }
+  save();
+  if(known && vState.idx>=list.length-1 && vocabDeckDone()){ toast("Niveau terminé ! 🎉"); setTimeout(()=>setVLevel(getVLevel()+1),500); return; }
+  setTimeout(()=>moveCard(1),250);
+}
+function drawCard(){
+  const list=vocabDeck(); if(vState.idx>=list.length) vState.idx=0; const w=list[vState.idx];
+  $("#vprog").style.width=((vState.idx+1)/list.length*100)+"%";
+  const badge = state.known[w.en]?' · <span style="color:var(--teal)">connu</span>':'';
+  $("#ffront").innerHTML=`<div class="eyebrow">Niveau ${getVLevel()} · ${state.level}${badge}</div><div class="word">${esc(w.en)}</div><div class="pos">${esc(w.pos||"")}</div><div style="margin-top:16px">${spk(w.en)}</div><div class="hint">Clique pour retourner</div>`;
+  $("#fback").innerHTML=`<div class="word" style="color:var(--accent)">${esc(w.fr)}</div>${w.ex?`<div class="ex">“${esc(w.ex)}”</div><div style="margin-top:14px">${spk(w.ex)}</div>`:""}<div class="hint">${vState.idx+1} / ${list.length}</div>`;
+}
+
+/* =========================================================================
+   GRAMMAR
+   ========================================================================= */
+function renderGrammar(){
+  const v=$("#view-grammar");
+  const list=levelSkills(); // 20 leçons pour le niveau courant
+  const done=list.filter(gb=>state.lessonsDone[gb.key]!=null).length;
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Grammaire</h2><p>20 leçons par niveau : la règle en français + un exercice corrigé.</p></div>${levelPickerHTML()}</div>
+    <div style="font-size:.78rem;color:var(--ink-soft);margin-bottom:14px">Niveau <b>${state.level}</b> · ${done}/${list.length} leçons faites</div>
+    <div class="lesson-list">${list.map((gb,i)=>{ const sc=state.lessonsDone[gb.key];
+      const badge = sc>=80?`<div class="done" style="color:var(--teal)">✓ Maîtrisée · ${sc}%</div>`
+        : (sc!=null?`<div class="done" style="color:var(--gold)">↻ À revoir · ${sc}%</div>`
+        : `<div class="done" style="color:var(--ink-soft)">• À faire</div>`);
+      return `<button class="card lesson-card" data-lesson="${gb.key}">
+        <div class="num">LEÇON ${String(i+1).padStart(2,"0")} · ${state.level}</div>
+        <h3>${gb.title}</h3><p>${gb.rule}</p>${badge}</button>`; }).join("")}</div>`;
+  v.querySelectorAll("[data-lesson]").forEach(b=>b.addEventListener("click",()=>openLesson(b.dataset.lesson)));
+}
+function goLesson(key){ go("grammar"); openLesson(key); }
+function openLesson(key){
+  const gb=GRAMMAR_BANK.find(x=>x.key===key); if(!gb){ renderGrammar(); return; }
+  const v=$("#view-grammar");
+  const idx=levelSkills().findIndex(x=>x.key===key)+1;
+  let correct=0, answered=0;
+  v.innerHTML=`
+    <button class="btn ghost small" id="backL">← Toutes les leçons</button>
+    <div class="card lesson-detail" style="margin-top:14px">
+      <div class="eyebrow">Niveau ${gb.level}${idx>0?` · Leçon ${String(idx).padStart(2,"0")}/${levelSkills().length}`:""}</div>
+      <h2>${gb.title}</h2>
+      <div class="notice" style="margin-top:8px">${gb.rule}</div>
+      <div class="eyebrow" style="margin-top:20px">Exercice — ${gb.items.length} questions</div>
+      <div id="quizBox"></div>
+    </div>`;
+  $("#backL").onclick=renderGrammar;
+  const box=$("#quizBox");
+  gb.items.forEach((q,qi)=>{
+    const qEl=el("div","quiz-q");
+    qEl.innerHTML=`<div class="q">${qi+1}. ${esc(q.q)}</div>`;
+    const fb=el("div","feedback");
+    q.opts.forEach((opt,oi)=>{
+      const b=el("button","opt",esc(opt));
+      b.onclick=()=>{
+        if(qEl.dataset.done)return; qEl.dataset.done="1"; answered++;
+        const btns=qEl.querySelectorAll(".opt"); btns.forEach(x=>x.disabled=true);
+        if(oi===q.a){ b.classList.add("correct"); correct++; fb.className="feedback show ok"; fb.textContent="✓ Correct — "+q.why; }
+        else { b.classList.add("wrong"); btns[q.a].classList.add("correct"); fb.className="feedback show no"; fb.textContent="✗ La bonne réponse : “"+q.opts[q.a]+"”. "+q.why; }
+        if(answered===gb.items.length){
+          const pct=Math.round(correct/gb.items.length*100);
+          if(!state.lessonsDone[gb.key] || state.lessonsDone[gb.key]<pct) state.lessonsDone[gb.key]=pct;
+          state.gen.skill[gb.key]=Math.round(skillMastery(gb.key)*0.5 + pct*0.5); // reflète dans le Parcours
+          addXP(correct*3); save();
+          toast(`Leçon terminée : ${pct}% · +${correct*3} XP`);
+        }
+      };
+      qEl.appendChild(b);
+    });
+    qEl.appendChild(fb); box.appendChild(qEl);
+  });
+}
+
+/* =========================================================================
+   GAMES
+   ========================================================================= */
+function renderGames(){
+  const v=$("#view-games");
+  const unlocked=Math.min(state.gamesUnlocked||1,20);
+  const doneN=Object.keys(state.gamesDone||{}).filter(k=>+k>=1&&+k<=20).length;
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Jeux</h2><p>20 niveaux de difficulté croissante. Atteins l'objectif pour débloquer le suivant.</p></div>${levelPickerHTML()}</div>
+    <div style="font-size:.78rem;color:var(--ink-soft);margin-bottom:12px">Vocabulaire du niveau <b>${state.level}</b> · débloqués : ${unlocked}/20 · réussis : ${doneN}/20</div>
+    <div class="lvlgrid" id="lvlgrid"></div>
+    <div class="section-head" style="margin:28px 0 12px"><div><h2 style="font-size:1.15rem">Practice libre</h2><p>Trois jeux à rejouer sans limite.</p></div></div>
+    <div class="game-pick">
+      <button class="card mod" data-game="match"><div class="ic">🔗</div><h3>Associer</h3><p>Relie chaque mot anglais à sa traduction.</p></button>
+      <button class="card mod" data-game="build"><div class="ic">🧩</div><h3>Phrase en désordre</h3><p>Remets les mots dans le bon ordre.</p></button>
+      <button class="card mod" data-game="quick"><div class="ic">⚡</div><h3>Traduction éclair</h3><p>30 secondes, un max de bonnes réponses.</p></button>
+    </div>
+    <div id="gameStage" style="margin-top:18px"></div>`;
+  const grid=$("#lvlgrid");
+  for(let n=1;n<=20;n++){
+    const locked=n>unlocked, done=state.gamesDone&&state.gamesDone[n]!=null;
+    const b=el("button","lvl-tile"+(locked?" locked":"")+(done?" done":""), locked?"🔒":(done?('★<small>'+n+'</small>'):String(n)));
+    if(!locked) b.onclick=()=>startGameLevel(n);
+    grid.appendChild(b);
+  }
+  v.querySelectorAll("[data-game]").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.game==="match")gameMatch();
+    if(b.dataset.game==="build")gameBuild();
+    if(b.dataset.game==="quick")gameQuick();
+    $("#gameStage").scrollIntoView({behavior:"smooth",block:"start"});
+  }));
+}
+function startGameLevel(n){
+  const stage=$("#gameStage");
+  const pool=allWords().filter(w=>w.lvl===state.level); const P=pool.length?pool:allWords();
+  const target=Math.min(3+Math.floor(n/2),12);
+  const initTime=Math.max(18,38-n);
+  let time=initTime, score=0, timer, current;
+  stage.innerHTML=`<div class="card" style="padding:22px">
+    <div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Niveau ${n}</b><span class="mono">⏱ <span id="qtime">${time}</span>s · <span id="qscore">0</span>/${target}</span></div>
+    <div class="timerbar"><i id="qbar" style="width:100%"></i></div>
+    <div id="qbody"></div></div>`;
+  function next(){
+    current=P[Math.floor(Math.random()*P.length)];
+    const opts=shuffle([current, ...shuffle(P.filter(w=>w!==current)).slice(0,3)]);
+    $("#qbody").innerHTML=`<div class="eyebrow" style="text-align:center">Traduis en anglais</div><div class="qt-word">${esc(current.fr)}</div>
+      <div class="qt-opts">${opts.map(o=>`<button class="opt" data-en="${esc(o.en)}" style="text-align:center">${esc(o.en)}</button>`).join("")}</div>`;
+    $("#qbody").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      if(b.dataset.en===current.en){ score++; $("#qscore").textContent=score; b.classList.add("correct"); if(score>=target){ finish(true); return; } }
+      else b.classList.add("wrong");
+      setTimeout(next,200);
+    });
+  }
+  function finish(win){
+    clearInterval(timer); _run.timer=null;
+    if(win){
+      if(!state.gamesDone) state.gamesDone={};
+      if(state.gamesDone[n]==null||state.gamesDone[n]<score) state.gamesDone[n]=score;
+      if(n===(state.gamesUnlocked||1) && n<20) state.gamesUnlocked=n+1;
+      state.gamesPlayed=(state.gamesPlayed||0)+1; addXP(5); save();
+      $("#qbody").innerHTML=`<div style="text-align:center;padding:16px"><div class="score-ring" style="color:var(--teal)">✓</div><div class="eyebrow">Niveau ${n} réussi · +5 XP</div>
+        <div class="row" style="justify-content:center;margin-top:12px">${n<20?'<button class="btn accent" id="nextLvl">Niveau '+(n+1)+' →</button>':'<b>🏆 Tous les niveaux terminés !</b>'}<button class="btn ghost" id="backLvl">Retour aux niveaux</button></div></div>`;
+      const nl=$("#nextLvl"); if(nl) nl.onclick=()=>startGameLevel(n+1);
+      $("#backLvl").onclick=renderGames;
+    } else {
+      $("#qbody").innerHTML=`<div style="text-align:center;padding:16px"><div class="score-ring" style="color:var(--gold)">${score}/${target}</div><div class="eyebrow">Presque ! Atteins l'objectif pour valider.</div>
+        <div class="row" style="justify-content:center;margin-top:12px"><button class="btn accent" id="retryLvl">Réessayer</button><button class="btn ghost" id="backLvl">Retour</button></div></div>`;
+      $("#retryLvl").onclick=()=>startGameLevel(n);
+      $("#backLvl").onclick=renderGames;
+    }
+  }
+  timer=_run.timer=setInterval(()=>{ time--; const t=$("#qtime"); if(t)t.textContent=time; const bar=$("#qbar"); if(bar)bar.style.width=(time/initTime*100)+"%"; if(time<=0) finish(score>=target); },1000);
+  next();
+  stage.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function allWords(){ return Object.values(VOCAB).flat(); }
+
+/* --- Match --- */
+function gameMatch(){
+  const stage=$("#gameStage");
+  const pairs=shuffle(allWords()).slice(0,6);
+  const left=shuffle(pairs), right=shuffle(pairs);
+  let sel=null, done=0;
+  stage.innerHTML=`<div class="card" style="padding:20px">
+    <div class="row" style="justify-content:space-between;margin-bottom:14px"><b>Associe les paires</b><span class="mono" id="mstat">0 / 6</span></div>
+    <div class="match-grid">
+      <div id="mLeft"></div><div id="mRight" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div></div>`;
+  const L=el("div"); L.style.cssText="display:flex;flex-direction:column;gap:10px";
+  left.forEach(w=>{ const i=el("div","match-item",esc(w.en)); i.dataset.en=w.en; i.dataset.side="en"; L.appendChild(i); });
+  $("#mLeft").replaceWith(L);
+  const R=$("#mRight");
+  right.forEach(w=>{ const i=el("div","match-item",esc(w.fr)); i.dataset.en=w.en; i.dataset.side="fr"; R.appendChild(i); });
+  stage.addEventListener("click",function h(e){
+    const it=e.target.closest(".match-item"); if(!it||it.classList.contains("done"))return;
+    if(!sel){ sel=it; it.classList.add("sel"); return; }
+    if(sel===it){ it.classList.remove("sel"); sel=null; return; }
+    if(sel.dataset.side===it.dataset.side){ sel.classList.remove("sel"); sel=it; it.classList.add("sel"); return; }
+    if(sel.dataset.en===it.dataset.en){
+      [sel,it].forEach(x=>{x.classList.remove("sel");x.classList.add("done");}); sel=null; done++;
+      $("#mstat").textContent=done+" / 6"; addXP(2);
+      if(done===6){ toast("Parfait ! Toutes les paires trouvées 🎉 +12 XP"); state.gamesPlayed++; save(); }
+    } else {
+      const a=sel,b=it; a.classList.add("err"); b.classList.add("err"); a.classList.remove("sel");
+      setTimeout(()=>{a.classList.remove("err");b.classList.remove("err");},500); sel=null;
+    }
+  });
+}
+
+/* --- Sentence builder --- */
+function gameBuild(){
+  const stage=$("#gameStage");
+  const sentence=SENTENCES[Math.floor(Math.random()*SENTENCES.length)];
+  const words=sentence.split(" ");
+  let placed=[];
+  stage.innerHTML=`<div class="card" style="padding:20px">
+    <div class="row" style="justify-content:space-between;margin-bottom:14px"><b>Remets la phrase dans l'ordre</b>${spk(sentence)}</div>
+    <div class="builder-target" id="bt"></div>
+    <div class="bank" id="bank"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn accent small" id="bcheck">Vérifier</button>
+      <button class="btn ghost small" id="breset">Recommencer</button>
+      <button class="btn ghost small" id="bnew">Nouvelle phrase</button>
+    </div>
+    <div class="feedback" id="bfb"></div>
+  </div>`;
+  const bank=$("#bank"), target=$("#bt");
+  function draw(){
+    bank.innerHTML=""; target.innerHTML="";
+    shuffle(words.map((w,i)=>({w,i}))).forEach(o=>{
+      if(placed.includes(o.i))return;
+      const c=el("button","word-chip",esc(o.w)); c.onclick=()=>{ placed.push(o.i); draw(); }; bank.appendChild(c);
+    });
+    placed.forEach((idx,pos)=>{
+      const c=el("button","word-chip",esc(words[idx])); c.onclick=()=>{ placed.splice(pos,1); draw(); }; target.appendChild(c);
+    });
+    if(!placed.length) target.innerHTML='<span style="color:var(--ink-soft);font-size:.85rem">Clique les mots pour construire la phrase…</span>';
+  }
+  $("#bcheck").onclick=()=>{
+    const fb=$("#bfb"); const attempt=placed.map(i=>words[i]).join(" ");
+    if(attempt===sentence){ fb.className="feedback show ok"; fb.textContent="✓ Parfait ! “"+sentence+".” +8 XP"; addXP(8); state.gamesPlayed++; save(); speak(sentence); }
+    else { fb.className="feedback show no"; fb.textContent="✗ Pas encore dans le bon ordre. Réessaie !"; }
+  };
+  $("#breset").onclick=()=>{ placed=[]; $("#bfb").className="feedback"; draw(); };
+  $("#bnew").onclick=gameBuild;
+  draw();
+}
+
+/* --- Quick translate --- */
+function gameQuick(){
+  const stage=$("#gameStage");
+  const pool=allWords(); let score=0, time=30, timer, current;
+  stage.innerHTML=`<div class="card" style="padding:22px">
+    <div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Traduction éclair</b><span class="mono">⏱ <span id="qtime">30</span>s · <span id="qscore">0</span> pts</span></div>
+    <div class="timerbar"><i id="qbar" style="width:100%"></i></div>
+    <div id="qbody"></div>
+  </div>`;
+  function next(){
+    current=pool[Math.floor(Math.random()*pool.length)];
+    const opts=shuffle([current, ...shuffle(pool.filter(w=>w!==current)).slice(0,3)]);
+    $("#qbody").innerHTML=`<div class="eyebrow" style="text-align:center">Traduis en anglais</div>
+      <div class="qt-word">${esc(current.fr)}</div>
+      <div class="qt-opts">${opts.map(o=>`<button class="opt" data-en="${esc(o.en)}" style="text-align:center">${esc(o.en)}</button>`).join("")}</div>`;
+    $("#qbody").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      if(b.dataset.en===current.en){ score++; $("#qscore").textContent=score; b.classList.add("correct"); addXP(1); }
+      else { b.classList.add("wrong"); }
+      setTimeout(next,220);
+    });
+  }
+  timer=_run.timer=setInterval(()=>{
+    time--; $("#qtime").textContent=time; $("#qbar").style.width=(time/30*100)+"%";
+    if(time<=0){ clearInterval(timer);
+      $("#qbody").innerHTML=`<div style="text-align:center;padding:20px">
+        <div class="score-ring">${score}</div><div class="eyebrow">bonnes réponses</div>
+        <p style="color:var(--ink-soft)">${score>=10?"Excellent rythme ! 🔥":score>=6?"Bien joué, continue !":"Continue à t'entraîner 💪"}</p>
+        <button class="btn accent" onclick="renderGames()">Rejouer</button></div>`;
+      state.gamesPlayed++; save();
+    }
+  },1000);
+  next();
+}
+
+/* =========================================================================
+   DIALOGUE
+   ========================================================================= */
+let dState={idx:0, shown:0};
+function renderDialogue(){
+  const v=$("#view-dialogue");
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Conversation</h2><p>Choisis une scène, écoute chaque réplique et joue tes lignes à voix haute.</p></div></div>
+    <div class="chips" id="dpick">${DIALOGUES.map((d,i)=>`<button class="chip" data-d="${i}" aria-pressed="${i===dState.idx}">${d.title}</button>`).join("")}</div>
+    <div class="card" style="padding:22px" id="dstage"></div>`;
+  v.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{ dState.idx=+b.dataset.d; dState.shown=0; renderDialogue(); });
+  drawDialogue();
+}
+function drawDialogue(){
+  const d=DIALOGUES[dState.idx], stage=$("#dstage");
+  const total=d.lines.length;
+  if(dState.shown===0) dState.shown=2;
+  dState.shown=Math.min(dState.shown,total);
+  stage.innerHTML=`<div class="row" style="justify-content:space-between;margin-bottom:14px">
+    <div><b>${esc(d.title)}</b><div style="color:var(--ink-soft);font-size:.85rem">${esc(d.sub)}</div></div>
+    <button class="btn ghost small" id="dtrans">FR</button></div>
+    <div class="chat" id="chat"></div>
+    <div class="row">
+      ${dState.shown<total?'<button class="btn accent small" id="dmore">Réplique suivante →</button>':'<button class="btn accent small" id="drestart">↺ Rejouer la scène</button>'}
+      <button class="btn ghost small" id="dplayall">🔊 Tout écouter</button>
+    </div>`;
+  const chat=$("#chat");
+  d.lines.slice(0,dState.shown).forEach(l=>{
+    const b=el("div","bubble "+(l.them?"them":"you"));
+    b.innerHTML=`<div class="who">${esc(l.who)}</div><div>${esc(l.en)} ${spk(l.en)}${l.them?"":' <button class="speak-btn" data-practice="'+esc(l.en)+'">🎤 M\'entraîner</button>'}</div><div class="fr">${esc(l.fr)}</div>`;
+    chat.appendChild(b);
+  });
+  if(dState.shown>=2 && d.lines[dState.shown-1].them) speak(d.lines[dState.shown-1].en);
+  const more=$("#dmore"); if(more) more.onclick=()=>{ dState.shown++; drawDialogue(); };
+  const rs=$("#drestart"); if(rs) rs.onclick=()=>{ dState.shown=2; drawDialogue(); };
+  $("#dtrans").onclick=()=>chat.querySelectorAll(".bubble").forEach(x=>x.classList.toggle("reveal"));
+  $("#dplayall").onclick=()=>playSequence(d.lines.slice(0,dState.shown));
+  chat.querySelectorAll("[data-practice]").forEach(b=>b.onclick=()=>go("speak")||practiceLine(b.dataset.practice));
+}
+function playSequence(lines){
+  if(!('speechSynthesis' in window)) return toast("Synthèse vocale indisponible.");
+  speechSynthesis.cancel(); let i=0;
+  (function nxt(){ if(i>=lines.length)return; const u=new SpeechSynthesisUtterance(lines[i].en); u.lang="en-US"; u.rate=0.92;
+    const vo=voices.find(x=>/en[-_]?US/i.test(x.lang)); if(vo)u.voice=vo; u.onend=()=>{i++;nxt();}; speechSynthesis.speak(u); })();
+}
+
+/* =========================================================================
+   SPEAK / PRONUNCIATION
+   ========================================================================= */
+let sState={idx:0};
+function renderSpeak(){ drawSpeak(SPEAK_LINES[sState.idx]); }
+function practiceLine(en){ go("speak"); drawSpeak({en,fr:""}); }
+function drawSpeak(item){
+  const v=$("#view-speak");
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Prononciation</h2><p>Écoute le modèle, appuie sur le micro et répète. L'app compare ce que tu as dit.</p></div></div>
+    <div class="chips" id="spick">${SPEAK_LINES.map((s,i)=>`<button class="chip" data-s="${i}" aria-pressed="${i===sState.idx}">${i+1}</button>`).join("")}</div>
+    <div class="card mic-stage">
+      <div class="eyebrow">Répète cette phrase</div>
+      <div class="target-sentence" id="target">${esc(item.en)}</div>
+      ${item.fr?`<div style="color:var(--ink-soft);font-size:.88rem">${esc(item.fr)}</div>`:""}
+      <div class="row" style="justify-content:center;margin-top:10px">${spk(item.en)}<button class="speak-btn" data-slow="${esc(item.en)}">🐢 Lentement</button></div>
+      <button class="mic-btn" id="micBtn" title="Enregistrer">🎤</button>
+      <div class="eyebrow" id="micState">Appuie pour enregistrer</div>
+      <div id="result"></div>
+      ${SR_OK?"":`<div class="notice">🔎 La reconnaissance vocale n'est pas prise en charge par ce navigateur (essaie Chrome ou Edge). Tu peux quand même écouter le modèle et t'auto-évaluer ci-dessous.</div>`}
+    </div>`;
+  v.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{ sState.idx=+b.dataset.s; drawSpeak(SPEAK_LINES[sState.idx]); });
+  v.querySelector("[data-slow]").onclick=e=>speak(e.target.dataset.slow,0.6);
+  $("#micBtn").onclick=()=>startRec(item.en);
+}
+function selfAssess(target){
+  $("#result").innerHTML=`<div style="margin-top:16px" class="row" style="justify-content:center">
+    <span style="color:var(--ink-soft);font-size:.88rem;margin-right:6px">Comment c'était ?</span>
+    <button class="btn ghost small" id="saOk">😀 Bien</button>
+    <button class="btn ghost small" id="saMid">😐 À revoir</button></div>`;
+  $("#saOk").onclick=()=>{ addXP(3); toast("Super ! +3 XP"); };
+  $("#saMid").onclick=()=>toast("On y retravaille 💪");
+}
+function startRec(target){
+  const btn=$("#micBtn"), st=$("#micState"), res=$("#result");
+  if(!SR_OK){ speak(target); selfAssess(target); return; }
+  let rec;
+  try{ rec=new SR(); }catch(e){ selfAssess(target); return; }
+  rec.lang="en-US"; rec.interimResults=false; rec.maxAlternatives=1;
+  btn.classList.add("rec"); st.textContent="🔴 Parle maintenant…"; res.innerHTML="";
+  let got=false;
+  rec.onresult=e=>{
+    got=true; const heard=e.results[0][0].transcript;
+    const {pct,marks}=scoreSpeech(target,heard);
+    const color = pct>=80?"var(--teal)":pct>=50?"var(--gold)":"var(--danger)";
+    const msg = pct>=80?"Excellent, très clair ! 🎯":pct>=50?"Pas mal, encore un effort 👍":"Réessaie doucement 🐢";
+    res.innerHTML=`<div style="margin-top:16px">
+      <div class="score-ring" style="color:${color}">${pct}%</div>
+      <div class="eyebrow">correspondance</div>
+      <div class="word-diff" style="margin-top:10px">${marks.map(m=>`<span class="${m.ok?'hit':'miss'}">${esc(m.w)}</span>`).join(" ")}</div>
+      <div class="heard">tu as dit : “${esc(heard)}”</div>
+      <p style="color:var(--ink-soft)">${msg}</p></div>`;
+    if(pct>=50) addXP(Math.round(pct/20));
+    if(pct>state.speakBest){ state.speakBest=pct; }
+    save();
+  };
+  rec.onerror=ev=>{
+    btn.classList.remove("rec"); st.textContent="Appuie pour enregistrer";
+    if(ev.error==="not-allowed"||ev.error==="service-not-allowed"){
+      res.innerHTML=`<div class="notice" style="border-color:var(--accent)"><b>🎤 Micro bloqué</b><div style="margin-top:6px">${micHelpBody()}</div></div>`;
+      selfAssess(target);
+    } else if(ev.error==="no-speech"){ st.textContent="Je n'ai rien entendu — réessaie"; }
+  };
+  rec.onend=()=>{ btn.classList.remove("rec"); if(!got && st.textContent.startsWith("🔴")) st.textContent="Appuie pour enregistrer"; };
+  try{ rec.start(); }catch(e){ btn.classList.remove("rec"); selfAssess(target); }
+}
+
+/* =========================================================================
+   READING ALOUD — 10 min/day goal, recorded score, error log
+   ========================================================================= */
+let rdState={idx:0, running:false, secs:0, transcript:""};
+function renderReading(){
+  const v=$("#view-reading");
+  const list=activeReadings();
+  if(rdState.idx>=list.length) rdState.idx=0;
+  const r=list[rdState.idx];
+  const todaySec=state.readDaily[todayKey()]||0;
+  const pct=Math.min(100,Math.round(todaySec/600*100));
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Lecture à haute voix</h2><p>Objectif : 10 min par jour. Lis le texte à voix haute — l'app enregistre ta note et les mots à retravailler.</p></div>${levelPickerHTML()}</div>
+    <div class="card" style="padding:16px 20px">
+      <div class="row" style="justify-content:space-between"><span class="eyebrow">Objectif du jour</span><span class="mono" style="font-weight:700">${fmt(todaySec)} / 10:00</span></div>
+      <div class="progress" style="margin-top:10px"><i id="rdDaily" style="width:${pct}%;background:${todaySec>=600?'var(--teal)':'var(--accent)'}"></i></div>
+    </div>
+    <div style="font-size:.78rem;color:var(--ink-soft);margin:14px 0 8px">Textes de niveau <b>${state.level}</b> (${list.length}). La voix modèle s'adapte aussi à ton niveau.</div>
+    <div class="chips" id="rdpick">${list.map((x,i)=>`<button class="chip" data-rd="${i}" aria-pressed="${i===rdState.idx}">${esc(x.title)} · ${x.level}</button>`).join("")}</div>
+    <div class="card" style="padding:24px">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div><div class="eyebrow">Niveau ${r.level} · ${r.mins}</div><h3 style="font-size:1.25rem;margin-top:3px">${esc(r.title)}</h3></div>
+        <div class="mono" style="font-size:1.3rem;font-weight:700" id="rdTimer">00:00</div>
+      </div>
+      <div style="font-size:1.08rem;line-height:1.85;max-width:60ch" id="rdText">${r.text.map(p=>`<p style="margin:0 0 12px">${esc(p)}</p>`).join("")}</div>
+      <div class="row" style="margin-top:16px">
+        <button class="btn accent" id="rdBtn">▶︎ Démarrer la lecture</button>
+        <button class="speak-btn" data-speak="${esc(r.text.join(' '))}">🔊 Écouter le modèle</button>
+      </div>
+      <div id="rdResult"></div>
+      ${SR_OK
+        ? (IN_IFRAME?`<details class="notice" style="border-color:var(--accent);margin-top:14px"><summary style="cursor:pointer;font-weight:600">🎤 Micro bloqué dans cet aperçu ? Clique ici — ton minuteur, lui, compte quand même tes minutes.</summary><div style="margin-top:8px">${micHelpBody()}</div></details>`:'')
+        : '<div class="notice">🔎 Sans reconnaissance vocale (essaie Chrome ou Edge), le minuteur fonctionne quand même : lis à voix haute pour valider tes 10 minutes, mais sans détection des erreurs.</div>'}
+    </div>
+    <div id="rdLog"></div>`;
+  v.querySelectorAll("[data-rd]").forEach(b=>b.onclick=()=>{ if(rdState.running) return toast("Termine ta lecture d'abord."); rdState.idx=+b.dataset.rd; renderReading(); });
+  $("#rdBtn").onclick=()=>rdState.running?readingStop():readingStart();
+  drawReadLog();
+}
+function readingStart(){
+  rdState.running=true; rdState.secs=0; rdState.transcript="";
+  const btn=$("#rdBtn"); btn.textContent="■ Terminer la lecture"; btn.classList.remove("accent"); btn.classList.add("ghost");
+  $("#rdResult").innerHTML='<div class="eyebrow" style="margin-top:14px;color:var(--accent)">🔴 Lecture en cours — lis à voix haute…</div>';
+  _run.sess=startContinuousSession({
+    onUpdate:t=>{ rdState.transcript=t; },
+    onError:err=>{ if(err==="not-allowed"||err==="service-not-allowed"){ const res=$("#rdResult"); if(res) res.innerHTML=`<div class="notice" style="border-color:var(--accent);margin-top:14px"><b>🎤 Micro bloqué</b> — pas de souci, le minuteur continue de compter tes minutes. Pour obtenir la note et les mots à retravailler :<div style="margin-top:6px">${micHelpBody()}</div></div>`; } }
+  });
+  _run.timer=setInterval(()=>{
+    rdState.secs++;
+    const t=$("#rdTimer"); if(t) t.textContent=fmt(rdState.secs);
+    const base=(state.readDaily[todayKey()]||0)+rdState.secs;
+    const d=$("#rdDaily"); if(d) d.style.width=Math.min(100,base/600*100)+"%";
+  },1000);
+}
+function readingStop(){
+  const list=activeReadings(); const r=list[rdState.idx]||list[0];
+  rdState.running=false;
+  if(_run.timer){ clearInterval(_run.timer); _run.timer=null; }
+  if(_run.sess && _run.sess.stop) _run.sess.stop(); _run.sess=null;
+  const secs=rdState.secs, k=todayKey();
+  state.readDaily[k]=(state.readDaily[k]||0)+secs;
+  addXP(Math.round(secs/30));
+  let logEntry=null;
+  if(rdState.transcript && SR_OK && secs>2){
+    const sc=readingScore(r.text.join(" "), rdState.transcript);
+    logEntry={date:k, title:r.title, pct:sc.pct, missed:sc.missed, secs:secs};
+    state.readLog.unshift(logEntry); state.readLog=state.readLog.slice(0,12);
+  }
+  save();
+  renderReading();
+  if(logEntry){
+    const color=logEntry.pct>=85?"var(--teal)":logEntry.pct>=65?"var(--gold)":"var(--danger)";
+    $("#rdResult").innerHTML=`<div style="margin-top:16px"><span class="score-ring" style="color:${color}">${logEntry.pct}%</span>
+      <div class="eyebrow">lu correctement · ${fmt(logEntry.secs)} de lecture</div>
+      ${logEntry.missed.length?`<p style="margin:12px 0 6px;font-size:.9rem">Mots à retravailler (clique pour les réécouter) :</p><div class="row">${logEntry.missed.map(w=>`<button class="word-chip" data-speak="${esc(w)}">${esc(w)} 🔊</button>`).join(" ")}</div>`:'<p style="color:var(--teal)">Bravo, tout était clair ! 🎉</p>'}</div>`;
+  } else {
+    $("#rdResult").innerHTML=`<div style="margin-top:16px" class="eyebrow">✓ ${fmt(secs)} ajoutées à ton objectif du jour</div>`;
+  }
+  toast("Lecture enregistrée · +"+Math.round(secs/30)+" XP");
+}
+function drawReadLog(){
+  const box=$("#rdLog"); if(!box) return;
+  if(!state.readLog.length){ box.innerHTML=""; return; }
+  box.innerHTML=`<div class="section-head" style="margin-top:28px"><div><h2 style="font-size:1.2rem">Carnet d'erreurs</h2><p>Tes dernières lectures et les mots à revoir.</p></div><button class="btn ghost small" id="rdClear">Vider</button></div>
+    <div class="grid">${state.readLog.map(e=>`<div class="card" style="padding:16px">
+      <div class="row" style="justify-content:space-between"><b>${esc(e.title)}</b><span class="mono" style="font-weight:700;color:${e.pct>=85?'var(--teal)':e.pct>=65?'var(--gold)':'var(--danger)'}">${e.pct}%</span></div>
+      <div style="color:var(--ink-soft);font-size:.78rem;margin:2px 0 8px">${esc(e.date)} · ${fmt(e.secs)}</div>
+      ${e.missed.length?`<div class="row">${e.missed.map(w=>`<button class="word-chip" data-speak="${esc(w)}">${esc(w)} 🔊</button>`).join(" ")}</div>`:'<span style="color:var(--teal);font-size:.85rem">Aucune erreur détectée 🎉</span>'}
+    </div>`).join("")}</div>`;
+  const c=$("#rdClear"); if(c) c.onclick=()=>{ if(rdState.running) return; state.readLog=[]; save(); renderReading(); };
+}
+
+/* =========================================================================
+   SHADOWING — listen & repeat segment by segment
+   ========================================================================= */
+let shState={idx:0, line:0};
+function renderShadow(){
+  const v=$("#view-shadow");
+  const list=activeShadow();
+  if(shState.idx>=list.length) shState.idx=0;
+  const p=list[shState.idx];
+  if(shState.line>=p.lines.length) shState.line=0;
+  const line=p.lines[shState.line];
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Shadowing</h2><p>Écoute le modèle et répète <b>immédiatement</b> en copiant le rythme et l'intonation. Un segment à la fois.</p></div>${levelPickerHTML()}</div>
+    <div style="font-size:.78rem;color:var(--ink-soft);margin-bottom:10px">Passages de niveau <b>${state.level}</b> (${list.length}).</div>
+    <div class="chips" id="shpick">${list.map((s,i)=>`<button class="chip" data-sh="${i}" aria-pressed="${i===shState.idx}">${esc(s.title)}</button>`).join("")}</div>
+    <div class="card" style="padding:22px">
+      <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="eyebrow">${esc(p.title)} · niveau ${p.level}</span><span class="mono" style="font-weight:700">${shState.line+1} / ${p.lines.length}</span></div>
+      <div class="progress" style="margin-bottom:18px"><i style="width:${(shState.line+1)/p.lines.length*100}%"></i></div>
+      <div class="target-sentence" style="text-align:center;margin:8px auto">${esc(line)}</div>
+      <div class="row" style="justify-content:center;margin:14px 0">
+        <button class="speak-btn" data-speak="${esc(line)}">🔊 Modèle</button>
+        <button class="speak-btn" data-slowsh="${esc(line)}">🐢 Lent</button>
+        <button class="speak-btn" id="shloop">🔁 x2</button>
+      </div>
+      <div style="text-align:center"><button class="mic-btn" id="shmic">🎤</button><div class="eyebrow" id="shstate">Répète après le modèle</div></div>
+      <div id="shresult"></div>
+      <div class="row" style="justify-content:space-between;margin-top:18px">
+        <button class="btn ghost small" id="shprev">← Segment</button>
+        <button class="btn accent small" id="shnext">Segment suivant →</button>
+      </div>
+      ${SR_OK?'':'<div class="notice">🔎 La reconnaissance vocale n\'est pas dispo ici (essaie Chrome/Edge). Tu peux quand même écouter le modèle et répéter à l\'oreille.</div>'}
+    </div>`;
+  v.querySelectorAll("[data-sh]").forEach(b=>b.onclick=()=>{ shState.idx=+b.dataset.sh; shState.line=0; renderShadow(); });
+  v.querySelector("[data-slowsh]").onclick=e=>speak(e.target.dataset.slowsh,0.6);
+  $("#shloop").onclick=()=>{ speak(line); setTimeout(()=>speak(line), Math.max(1600, line.length*95)); };
+  $("#shprev").onclick=()=>{ shState.line=(shState.line-1+p.lines.length)%p.lines.length; renderShadow(); };
+  $("#shnext").onclick=()=>{ shState.line=(shState.line+1)%p.lines.length; renderShadow(); };
+  $("#shmic").onclick=()=>shadowRec(line);
+}
+function shadowRec(target){
+  const btn=$("#shmic"), st=$("#shstate"), res=$("#shresult");
+  if(!SR_OK){ speak(target); return; }
+  recordUtterance(target,{
+    onStart:()=>{ btn.classList.add("rec"); st.textContent="🔴 Parle…"; res.innerHTML=""; },
+    onScore:(r,heard)=>{
+      const color=r.pct>=80?"var(--teal)":r.pct>=50?"var(--gold)":"var(--danger)";
+      res.innerHTML=`<div style="text-align:center;margin-top:12px"><span class="score-ring" style="color:${color}">${r.pct}%</span>
+        <div class="word-diff" style="margin-top:8px">${r.marks.map(m=>`<span class="${m.ok?'hit':'miss'}">${esc(m.w)}</span>`).join(" ")}</div>
+        <div class="heard">tu as dit : “${esc(heard)}”</div></div>`;
+      if(r.pct>=60) addXP(2);
+    },
+    onError:(err)=>{ btn.classList.remove("rec"); st.textContent="Appuie pour répéter"; if(err==="not-allowed"||err==="service-not-allowed") res.innerHTML=`<div class="notice" style="border-color:var(--accent)"><b>🎤 Micro bloqué</b><div style="margin-top:6px">${micHelpBody()}</div></div>`; },
+    onEnd:(got)=>{ btn.classList.remove("rec"); if(!got) st.textContent="Répète après le modèle"; }
+  });
+}
+
+/* =========================================================================
+   ÉLOCUTION — random topic, speak 1 minute
+   ========================================================================= */
+let tkState={topic:null, running:false, left:60, transcript:""};
+function renderTalk(){
+  const v=$("#view-talk");
+  if(!tkState.topic) tkState.topic=TOPICS[Math.floor(Math.random()*TOPICS.length)];
+  const t=tkState.topic;
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Élocution — parle 1 minute</h2><p>Un sujet au hasard, 60 secondes pour t'exprimer sans t'arrêter. L'objectif, c'est la fluidité, pas la perfection.</p></div></div>
+    <div class="card" style="padding:26px;text-align:center">
+      <div class="eyebrow">Ton sujet</div>
+      <div class="target-sentence" style="max-width:32ch;margin:10px auto 4px">${esc(t.en)}</div>
+      <div style="color:var(--ink-soft);font-size:.88rem">${esc(t.fr)}</div>
+      <div class="score-ring" id="tkClock" style="margin:18px 0 6px">01:00</div>
+      <div class="timerbar" style="max-width:320px;margin:0 auto 16px"><i id="tkBar" style="width:100%"></i></div>
+      <div class="row" style="justify-content:center">
+        <button class="btn accent" id="tkBtn">● Commencer</button>
+        <button class="btn ghost" id="tkNew">🎲 Autre sujet</button>
+      </div>
+      <div id="tkResult"></div>
+    </div>
+    <div class="card" style="padding:20px;margin-top:16px">
+      <div class="eyebrow">Structure express (1 min)</div>
+      <table class="egtable"><tbody>
+        <tr><td>0–15 s · Intro</td><td class="fr">Reformule le sujet et donne ton avis général.</td></tr>
+        <tr><td>15–45 s · Corps</td><td class="fr">Deux raisons, ou un exemple concret et personnel.</td></tr>
+        <tr><td>45–60 s · Conclusion</td><td class="fr">Résume ton idée en une phrase.</td></tr>
+      </tbody></table>
+      <div class="eyebrow" style="margin-top:14px">Phrases pour gagner du temps</div>
+      <div class="row" style="margin-top:8px">${["Well, let me think about that...","That's an interesting question.","There are a few reasons for this.","For example,...","On the other hand,...","To sum up,..."].map(p=>`<button class="word-chip" data-speak="${esc(p)}">${esc(p)} 🔊</button>`).join(" ")}</div>
+      ${SR_OK?'':'<div class="notice">🔎 Sans reconnaissance vocale, le chrono d\'1 minute fonctionne quand même. Chrome/Edge affichent en plus ton débit de parole.</div>'}
+    </div>`;
+  $("#tkNew").onclick=()=>{ if(tkState.running) return; let n; do{ n=TOPICS[Math.floor(Math.random()*TOPICS.length)]; }while(n===tkState.topic && TOPICS.length>1); tkState.topic=n; renderTalk(); };
+  $("#tkBtn").onclick=()=>tkState.running?talkStop():talkStart();
+}
+function talkStart(){
+  tkState.running=true; tkState.left=60; tkState.transcript="";
+  const btn=$("#tkBtn"); btn.textContent="■ Terminer"; btn.classList.remove("accent"); btn.classList.add("ghost");
+  $("#tkResult").innerHTML='<div class="eyebrow" style="margin-top:14px;color:var(--accent)">🔴 Parle maintenant…</div>';
+  _run.sess=startContinuousSession({ onUpdate:t=>{ tkState.transcript=t; }, onError:()=>{} });
+  _run.timer=setInterval(()=>{
+    tkState.left--;
+    const c=$("#tkClock"); if(c) c.textContent="00:"+String(Math.max(0,tkState.left)).padStart(2,"0");
+    const b=$("#tkBar"); if(b) b.style.width=Math.max(0,tkState.left/60*100)+"%";
+    if(tkState.left<=0) talkStop();
+  },1000);
+}
+function talkStop(){
+  const elapsed=60-Math.max(0,tkState.left);
+  tkState.running=false;
+  if(_run.timer){ clearInterval(_run.timer); _run.timer=null; }
+  if(_run.sess && _run.sess.stop) _run.sess.stop(); _run.sess=null;
+  const btn=$("#tkBtn"); if(btn){ btn.textContent="● Recommencer"; btn.classList.add("accent"); btn.classList.remove("ghost"); }
+  const c=$("#tkClock"); if(c) c.textContent="01:00"; const b=$("#tkBar"); if(b) b.style.width="100%";
+  addXP(5);
+  const words=tkState.transcript.trim()?tkState.transcript.trim().split(/\s+/).length:0;
+  const fillers=(tkState.transcript.toLowerCase().match(/\b(um+|uh+|er+|like|you know|kind of|sort of)\b/g)||[]).length;
+  const wpm=elapsed>3?Math.round(words/(elapsed/60)):0;
+  let msg;
+  if(!SR_OK) msg=`Bravo, tu as tenu ${elapsed}s ! Recommence avec un autre sujet pour gagner en aisance.`;
+  else if(words<10) msg="Je n'ai pas capté grand-chose — parle plus fort / plus près du micro, ou lance-toi davantage !";
+  else if(wpm<90) msg="Bon débit, posé. Essaie d'enchaîner avec moins de pauses la prochaine fois.";
+  else if(wpm<150) msg="Très bon débit, naturel et fluide 👏";
+  else msg="Débit rapide ! Pense à respirer et articuler pour rester bien clair.";
+  const stats = (SR_OK && words>=10)
+    ? `<div class="row" style="justify-content:center;gap:24px;margin:12px 0">
+        <div><div class="score-ring" style="font-size:1.9rem">${words}</div><div class="eyebrow">mots</div></div>
+        <div><div class="score-ring" style="font-size:1.9rem">${wpm}</div><div class="eyebrow">mots/min</div></div>
+        <div><div class="score-ring" style="font-size:1.9rem;color:${fillers>4?'var(--gold)':'var(--teal)'}">${fillers}</div><div class="eyebrow">hésitations</div></div></div>`
+    : `<div class="score-ring" style="margin:10px 0">${elapsed}s</div>`;
+  $("#tkResult").innerHTML=`<div style="margin-top:16px">${stats}<p style="color:var(--ink-soft);max-width:44ch;margin:6px auto">${msg}</p>${(SR_OK&&tkState.transcript)?`<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--ink-soft);font-size:.85rem">Voir ce que tu as dit</summary><p class="heard" style="max-width:52ch;margin:8px auto">${esc(tkState.transcript)}</p></details>`:''}</div>`;
+  toast("Bravo ! +5 XP");
+}
+
+/* =========================================================================
+   PROGRESS — mark days, visualize data, adaptive plan
+   ========================================================================= */
+function readingAvg(){ if(!state.readLog.length) return null; return Math.round(state.readLog.reduce((s,e)=>s+e.pct,0)/state.readLog.length); }
+function weekDates(){ const arr=[], t=new Date(); for(let i=6;i>=0;i--){ const d=new Date(t); d.setDate(t.getDate()-i); arr.push(d.toDateString()); } return arr; }
+function weeklyStats(){
+  const wk=weekDates();
+  const daysActive=wk.filter(ds=>state.daysDone[ds]).length;
+  const readSec=wk.reduce((s,ds)=>s+(state.readDaily[ds]||0),0);
+  const logs=state.readLog.filter(e=>wk.includes(e.date));
+  const readAvg=logs.length?Math.round(logs.reduce((s,e)=>s+e.pct,0)/logs.length):null;
+  return {daysActive, readSec, readAvg, sessions:logs.length};
+}
+function weakestSkill(){ return masteryData().reduce((a,b)=>b.val<a.val?b:a); }
+function recapMessage(w,weak){
+  const bits=[];
+  if(w.daysActive>=5) bits.push("Superbe régularité cette semaine 👏.");
+  else if(w.daysActive>0) bits.push(`Tu as pratiqué ${w.daysActive} jour(s) — vise 5/7 la semaine prochaine.`);
+  else bits.push("Aucune journée marquée cette semaine — reprends en douceur dès aujourd'hui.");
+  bits.push(`Ton point faible du moment : <b>${weak.label.toLowerCase()}</b> (${weak.val}%). Consacres-y un peu de temps.`);
+  return bits.join(" ");
+}
+function recapHTML(){
+  const w=weeklyStats(), weak=weakestSkill(), sug=suggestLevel();
+  const showSug = state.readLog.length>=2 && sug!==state.level;
+  return `<div class="card" style="padding:22px;border-top:3px solid var(--accent);margin-bottom:16px">
+    <div class="row" style="justify-content:space-between;align-items:center;gap:12px">
+      <div><div class="eyebrow">Bilan de la semaine</div><h3 style="font-size:1.2rem;margin-top:3px">Tes 7 derniers jours</h3></div>
+      ${levelPickerHTML()}
+    </div>
+    <div class="stat-row" style="margin-top:16px">
+      <div class="stat"><div class="n mono">${w.daysActive}/7</div><div class="l">Jours actifs</div></div>
+      <div class="stat"><div class="n mono">${Math.round(w.readSec/60)}</div><div class="l">Min. lues (semaine)</div></div>
+      <div class="stat"><div class="n mono">${w.readAvg!=null?w.readAvg+"%":"—"}</div><div class="l">Précision lecture</div></div>
+      <div class="stat"><div class="n mono">${weak.val}%</div><div class="l">Point faible : ${weak.label}</div></div>
+    </div>
+    <div class="notice" style="margin-top:16px">${recapMessage(w,weak)}</div>
+    ${showSug?`<div class="row" style="margin-top:12px;justify-content:space-between;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:12px 14px">
+      <span style="font-size:.88rem">🎚️ D'après tes résultats, le niveau <b>${levelName(sug)} (${sug})</b> te conviendrait mieux.</span>
+      <button class="btn accent small" data-lvl="${sug}">Passer en ${sug}</button></div>`:''}
+  </div>`;
+}
+function aggregateMissed(){ const f={}; state.readLog.forEach(e=>(e.missed||[]).forEach(w=>f[w]=(f[w]||0)+1)); return Object.keys(f).sort((a,b)=>f[b]-f[a]); }
+function barColor(v){ return v>=80?"var(--teal)":v>=50?"var(--gold)":"var(--accent)"; }
+function exportProgress(){
+  const data=JSON.stringify(state,null,2);
+  const blob=new Blob([data],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const d=new Date(), stamp=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const a=document.createElement("a"); a.href=url; a.download="fluent-lab-"+stamp+".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast("Progression exportée ⬇︎");
+}
+function importProgress(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const s=JSON.parse(r.result);
+      state=Object.assign({},DEFAULT_STATE,s);
+      state.gen=Object.assign({done:0,skill:{},history:[]},state.gen||{});
+      state.gen.skill=Object.assign({},state.gen.skill);
+      state.gen.history=(state.gen.history||[]).slice();
+      state.streak=computeStreak(); save(); updateStreakBadge();
+      toast("Progression importée ✓"); go("progress");
+    }catch(e){ toast("Fichier invalide"); }
+  };
+  r.readAsText(file);
+}
+function masteryData(){
+  const total=allWords().length, known=Object.keys(state.known).length;
+  return [
+    {label:"Vocabulaire", val:total?Math.round(known/total*100):0},
+    {label:"Grammaire",   val:(function(){ const gl=levelSkills(); return gl.length?Math.round(gl.reduce((s,gb)=>s+(state.lessonsDone[gb.key]||0),0)/gl.length):0; })()},
+    {label:"Lecture",     val:readingAvg()||0},
+    {label:"Prononciation", val:state.speakBest||0}
+  ];
+}
+function calendarHTML(){
+  const days=35, today=new Date();
+  const start=new Date(today); start.setDate(today.getDate()-(days-1));
+  const lead=(start.getDay()+6)%7; // 0 = Monday
+  let html='<div class="cal">'+["L","M","M","J","V","S","D"].map(d=>`<div class="dow">${d}</div>`).join("");
+  for(let i=0;i<lead;i++) html+='<div class="cell empty"></div>';
+  for(let i=0;i<days;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i); const ds=d.toDateString();
+    const isToday=ds===today.toDateString(), done=!!state.daysDone[ds], future=d>today && !isToday;
+    html+=`<div class="cell ${done?"done":""} ${isToday?"today":""} ${future?"future":""}" data-day="${ds}" title="${ds}">${d.getDate()}</div>`;
+  }
+  return html+"</div>";
+}
+function readingBarsHTML(){
+  const days=14, today=new Date(), arr=[]; let maxSec=600;
+  for(let i=days-1;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); const ds=d.toDateString(); const sec=state.readDaily[ds]||0; maxSec=Math.max(maxSec,sec); arr.push({d,sec,ds}); }
+  return `<div class="barc">${arr.map(o=>{ const h=Math.round(o.sec/maxSec*100); const lbl=["D","L","M","M","J","V","S"][o.d.getDay()];
+    return `<div class="bar ${o.sec>=600?"goal":""}" title="${o.ds} : ${fmt(o.sec)}"><i style="height:${h}%"></i><small>${lbl}</small></div>`; }).join("")}</div>`;
+}
+function buildRecs(){
+  const recs=[];
+  const todaySec=state.readDaily[todayKey()]||0;
+  if(todaySec<600) recs.push({ico:"▥",title:"Termine tes 10 minutes de lecture",desc:`Il te reste ${fmt(600-todaySec)} aujourd'hui.`,btn:"Lire",go:"reading"});
+  const weak=levelSkills().filter(gb=>(state.lessonsDone[gb.key]||0)<80);
+  if(weak.length){ const g=weak[0]; recs.push({ico:"▦",title:`Grammaire à consolider : ${g.title}`,desc:state.lessonsDone[g.key]!=null?`Ton score : ${state.lessonsDone[g.key]}%. Vise 80%+ pour la valider.`:"Tu n'as pas encore fait cette leçon.",lesson:g.key}); }
+  const mw=aggregateMissed();
+  if(mw.length) recs.push({ico:"●",title:"Mots à reprononcer",desc:"Ils reviennent souvent dans ton carnet d'erreurs — clique pour les réécouter.",words:mw.slice(0,8)});
+  const known=Object.keys(state.known).length, total=allWords().length;
+  if(total && known/total<0.5) recs.push({ico:"▤",title:"Enrichis ton vocabulaire",desc:`Tu as appris ${known}/${total} mots. Continue les cartes-mémo.`,btn:"Réviser",go:"vocab"});
+  const ravg=readingAvg();
+  if(ravg!=null){
+    if(ravg>=90) recs.push({ico:"▲",title:"Monte en niveau",desc:`Ta lecture est excellente (${ravg}%). Essaie un texte plus difficile (B2).`,btn:"Lire",go:"reading"});
+    else if(ravg<65) recs.push({ico:"🐢",title:"Ralentis et articule",desc:`Ta précision de lecture est de ${ravg}%. Reprends un texte plus simple (A2), plus lentement.`,btn:"Lire",go:"reading"});
+  }
+  if(!state.daysDone[todayKey()]) recs.push({ico:"✓",title:"Marque ta journée",desc:"Fais au moins un exercice aujourd'hui pour garder ta série.",btn:"Commencer",go:"reading"});
+  if(!recs.length) recs.push({ico:"🎉",title:"Tout est à jour !",desc:"Beau travail. Continue sur ta lancée, tu es sur la bonne voie."});
+  return recs;
+}
+function renderProgress(){
+  const v=$("#view-progress");
+  const todayDone=!!state.daysDone[todayKey()];
+  const doneCount=Object.keys(state.daysDone).length;
+  const ravg=readingAvg();
+  const recs=buildRecs();
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Progrès</h2><p>Marque tes jours, visualise tes données récentes et suis ton plan adapté à tes résultats.</p></div>
+      <button class="btn ${todayDone?"ghost":"accent"} small" id="markToday">${todayDone?"✓ Aujourd'hui marqué":"Marquer aujourd'hui ✓"}</button></div>
+    ${recapHTML()}
+    <div class="stat-row" style="margin-bottom:16px">
+      <div class="stat"><div class="n mono">${state.streak}</div><div class="l">Série actuelle 🔥</div></div>
+      <div class="stat"><div class="n mono">${doneCount}</div><div class="l">Jours faits au total</div></div>
+      <div class="stat"><div class="n mono">${state.xp}</div><div class="l">Points XP</div></div>
+      <div class="stat"><div class="n mono">${ravg!=null?ravg+"%":"—"}</div><div class="l">Lecture moyenne</div></div>
+    </div>
+    <div class="card" style="padding:22px">
+      <div class="row" style="justify-content:space-between;margin-bottom:14px;align-items:end">
+        <div><div class="eyebrow">Calendrier</div><h3 style="font-size:1.15rem;margin-top:3px">Tes jours d'entraînement</h3></div>
+        <span style="font-size:.76rem;color:var(--ink-soft);max-width:22ch;text-align:right">Clique un jour pour le (dé)marquer — même les jours passés.</span>
+      </div>
+      ${calendarHTML()}
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:16px">
+      <div class="card" style="padding:22px">
+        <div class="eyebrow">Lecture — 14 derniers jours</div><h3 style="font-size:1.1rem;margin:3px 0 6px">Minutes par jour</h3>
+        ${readingBarsHTML()}
+        <div style="font-size:.72rem;color:var(--ink-soft);margin-top:8px">Barre <span style="color:var(--teal);font-weight:700">verte</span> = objectif 10 min atteint.</div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div class="eyebrow">Niveau par compétence</div><h3 style="font-size:1.1rem;margin:3px 0 14px">Ta maîtrise</h3>
+        <div class="mbar">${masteryData().map(m=>`<div class="r"><span style="font-size:.85rem">${m.label}</span><div class="track"><i style="width:${m.val}%;background:${barColor(m.val)}"></i></div><span class="pctv" style="color:${barColor(m.val)}">${m.val}%</span></div>`).join("")}</div>
+      </div>
+    </div>
+    <div class="section-head" style="margin:30px 0 14px"><div><h2 style="font-size:1.3rem">Ton plan adaptatif</h2><p>Recommandé d'après tes dernières données.</p></div></div>
+    <div class="grid">${recs.map(r=>`<div class="rec-card"><div class="rico">${r.ico}</div><div style="flex:1">
+      <b>${esc(r.title)}</b>${r.desc?`<div style="color:var(--ink-soft);font-size:.86rem;margin-top:3px">${esc(r.desc)}</div>`:""}
+      ${r.words?`<div class="row" style="margin-top:10px">${r.words.map(w=>`<button class="word-chip" data-speak="${esc(w)}">${esc(w)} 🔊</button>`).join(" ")}</div>`:""}
+      ${r.lesson?`<button class="btn accent small" data-planlesson="${r.lesson}" style="margin-top:10px">Ouvrir la leçon →</button>`:(r.go?`<button class="btn accent small" data-plango="${r.go}" style="margin-top:10px">${esc(r.btn||"Ouvrir")} →</button>`:"")}
+    </div></div>`).join("")}</div>
+    <div class="card" style="padding:18px 20px;margin-top:24px">
+      <div class="eyebrow">Sauvegarde &amp; transfert</div>
+      <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px;gap:12px">
+        <span style="color:var(--ink-soft);font-size:.85rem;max-width:44ch">Ta progression est enregistrée dans ce navigateur. Exporte-la pour la sauvegarder ou la transférer sur un autre appareil / navigateur.</span>
+        <div class="row">
+          <button class="btn ghost small" id="expBtn">⬇︎ Exporter</button>
+          <button class="btn ghost small" id="impBtn">⬆︎ Importer</button>
+          <input type="file" id="impFile" accept="application/json,.json" style="display:none">
+        </div>
+      </div>
+    </div>`;
+  $("#expBtn").onclick=exportProgress;
+  $("#impBtn").onclick=()=>$("#impFile").click();
+  $("#impFile").onchange=e=>{ if(e.target.files[0]) importProgress(e.target.files[0]); };
+  $("#markToday").onclick=()=>{ markDay(todayKey(), !state.daysDone[todayKey()]); updateStreakBadge(); renderProgress(); };
+  v.querySelectorAll(".cell[data-day]").forEach(c=>{ if(c.classList.contains("future")||c.classList.contains("empty")) return;
+    c.onclick=()=>{ const ds=c.dataset.day; markDay(ds, !state.daysDone[ds]); updateStreakBadge(); renderProgress(); }; });
+  v.querySelectorAll("[data-plango]").forEach(b=>b.onclick=()=>go(b.dataset.plango));
+  v.querySelectorAll("[data-planlesson]").forEach(b=>b.onclick=()=>goLesson(b.dataset.planlesson));
+}
+
+/* =========================================================================
+   PARCOURS — generated adaptive lessons
+   ========================================================================= */
+function levelRank(l){ return l==="A2"?0:l==="B1"?1:2; }
+function candidateSkills(){ return GRAMMAR_BANK.filter(gb=>levelRank(gb.level)<=levelRank(state.level)); }
+function levelSkills(){ return GRAMMAR_BANK.filter(gb=>gb.level===state.level); }
+function skillMastery(k){ return (state.gen.skill&&state.gen.skill[k])||0; }
+function pickFocus(){
+  const c=levelSkills();
+  const min=Math.min(...c.map(gb=>skillMastery(gb.key)));
+  const weak=c.filter(gb=>skillMastery(gb.key)===min);
+  return weak[Math.floor(Math.random()*weak.length)];
+}
+function mcqFrom(it,skill){ return {type:"mcq", prompt:it.q, options:it.opts, answer:it.a, why:it.why, skill}; }
+function vocabItem(){
+  const pool=allWords().filter(w=>w.lvl===state.level); const P=pool.length?pool:allWords();
+  const w=P[Math.floor(Math.random()*P.length)];
+  const others=shuffle(allWords().filter(x=>x.en!==w.en)).slice(0,3);
+  const opts=shuffle([w,...others]);
+  return {type:"mcq", prompt:`Traduis en anglais : « ${w.fr} »`, options:opts.map(o=>o.en), answer:opts.findIndex(o=>o.en===w.en), why:`« ${w.fr} » = « ${w.en} ».`, skill:"vocab", speak:w.en};
+}
+function orderItem(){ const s=SENTENCES[Math.floor(Math.random()*SENTENCES.length)]; return {type:"order", sentence:s, skill:"wordorder"}; }
+function genLesson(){
+  const focus=pickFocus();
+  const n=Math.max(5,Math.min(9,5+Math.floor(state.gen.done/3)));
+  const tasks=[];
+  shuffle(focus.items).slice(0,3).forEach(it=>tasks.push(mcqFrom(it,focus.key)));
+  shuffle(candidateSkills().filter(gb=>gb.key!==focus.key)).slice(0,2).forEach(gb=>{ const it=gb.items[Math.floor(Math.random()*gb.items.length)]; tasks.push(mcqFrom(it,gb.key)); });
+  tasks.push(vocabItem());
+  if(n>=7) tasks.push(vocabItem());
+  tasks.push(orderItem());
+  while(tasks.length<n){ const it=focus.items[Math.floor(Math.random()*focus.items.length)]; tasks.push(mcqFrom(it,focus.key)); }
+  return {title:`Leçon ${state.gen.done+1} · ${state.level} — focus : ${focus.title}`, focus, tasks:shuffle(tasks).slice(0,n)};
+}
+let pathLesson=null;
+function renderPath(){
+  const v=$("#view-path");
+  const c=levelSkills();
+  const masteredCount=c.filter(gb=>skillMastery(gb.key)>=80).length;
+  const allMastered=c.length && masteredCount===c.length;
+  const focus=pickFocus();
+  const fi=c.findIndex(gb=>gb.key===focus.key)+1;
+  const nEx=Math.max(5,Math.min(9,5+Math.floor(state.gen.done/3)));
+  const hist=state.gen.history||[];
+  v.innerHTML=`
+    <div class="section-head"><div><h2>Parcours</h2><p>Des leçons générées et personnalisées, qui évoluent avec ta progression.</p></div>${levelPickerHTML()}</div>
+    <div class="stat-row" style="margin-bottom:16px">
+      <div class="stat"><div class="n mono">${state.gen.done}</div><div class="l">Leçons générées</div></div>
+      <div class="stat"><div class="n mono">${masteredCount}/${c.length}</div><div class="l">Points maîtrisés (${state.level})</div></div>
+      <div class="stat"><div class="n mono">${state.xp}</div><div class="l">Points XP</div></div>
+    </div>
+    ${allMastered && levelRank(state.level)<2 ? `<div class="card" style="padding:16px 18px;margin-bottom:16px;background:var(--accent-soft);border:1px solid var(--accent)"><b>🏆 Tu maîtrises tout le niveau ${state.level} !</b> <span style="color:var(--ink-soft)">Passe au niveau supérieur pour débloquer de nouvelles leçons.</span> <button class="btn accent small" data-lvl="${state.level==="A2"?"B1":"B2"}" style="margin-left:6px">Passer en ${state.level==="A2"?"B1":"B2"}</button></div>`:""}
+    <div class="card" style="padding:26px;text-align:center">
+      <div class="eyebrow">Ta prochaine leçon · niveau ${state.level} · Leçon ${String(fi).padStart(2,"0")}/${c.length}</div>
+      <h3 style="font-size:1.35rem;margin:8px 0 6px;letter-spacing:-.01em">Focus : ${focus.title}</h3>
+      <p style="color:var(--ink-soft);max-width:48ch;margin:0 auto 6px">${focus.rule}</p>
+      <p style="font-size:.8rem;color:var(--ink-soft)">Générée d'après ton niveau et tes points faibles · ${nEx} exercices</p>
+      <button class="btn accent" id="genBtn" style="margin-top:16px">▶︎ Générer ma leçon</button>
+    </div>
+    <div class="card" style="padding:22px;margin-top:16px">
+      <div class="eyebrow">Ta carte de progression — niveau ${state.level} · ${c.length} leçons</div>
+      <div class="mbar" style="margin-top:14px">${c.map((gb,i)=>{ const m=skillMastery(gb.key); return `<div class="r"><span style="font-size:.82rem"><span class="mono" style="color:var(--accent);font-size:.72rem;margin-right:5px">${String(i+1).padStart(2,"0")}</span>${gb.title}</span><div class="track"><i style="width:${m}%;background:${barColor(m)}"></i></div><span class="pctv" style="color:${barColor(m)}">${m}%</span></div>`; }).join("")}</div>
+    </div>
+    ${hist.length?`<div class="section-head" style="margin:28px 0 14px"><div><h2 style="font-size:1.2rem">Leçons terminées</h2></div></div>
+      <div class="grid">${hist.map(h=>`<div class="card" style="padding:14px 16px"><div class="row" style="justify-content:space-between"><b style="font-size:.9rem">${esc(h.title)}</b><span class="mono" style="color:${barColor(h.pct)};font-weight:700">${h.pct}%</span></div><div style="color:var(--ink-soft);font-size:.76rem;margin-top:2px">${esc(h.date)}</div></div>`).join("")}</div>`:""}
+  `;
+  $("#genBtn").onclick=()=>{ pathLesson=genLesson(); runLesson(); window.scrollTo({top:0,behavior:"smooth"}); };
+}
+function runLesson(){
+  const v=$("#view-path"), L=pathLesson;
+  let correct=0, answered=0, focusCorrect=0;
+  const focusTotal=L.tasks.filter(t=>t.skill===L.focus.key).length;
+  v.innerHTML=`<button class="btn ghost small" id="backP">← Parcours</button>
+    <div class="card lesson-detail" style="margin-top:14px">
+      <div class="eyebrow">Leçon générée · niveau ${state.level}</div>
+      <h2 style="font-size:1.4rem">${esc(L.title)}</h2>
+      <div class="notice" style="margin-top:10px"><b>${esc(L.focus.title)}</b> — ${L.focus.rule}</div>
+      <div id="taskBox"></div>
+      <div id="lessonEnd"></div>
+    </div>`;
+  $("#backP").onclick=renderPath;
+  const box=$("#taskBox");
+  function checkEnd(){
+    if(answered<L.tasks.length) return;
+    const pct=Math.round(correct/L.tasks.length*100);
+    const perf=focusTotal?Math.round(focusCorrect/focusTotal*100):pct;
+    state.gen.skill[L.focus.key]=Math.round(skillMastery(L.focus.key)*0.5 + perf*0.5);
+    state.gen.done++;
+    state.gen.history=(state.gen.history||[]); state.gen.history.unshift({title:L.title, pct, date:new Date().toDateString()}); state.gen.history=state.gen.history.slice(0,10);
+    addXP(correct*3); save();
+    $("#lessonEnd").innerHTML=`<div style="text-align:center;margin-top:20px;border-top:1px solid var(--line);padding-top:18px">
+      <span class="score-ring" style="color:${barColor(pct)}">${pct}%</span>
+      <div class="eyebrow">${correct}/${L.tasks.length} · +${correct*3} XP</div>
+      <p style="color:var(--ink-soft)">${pct>=80?"Excellent ! Ce point est en bonne voie 💪":pct>=50?"Bien joué, tu progresses.":"Ça vient — refais une leçon pour l'ancrer."}</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn accent" id="nextLesson">Leçon suivante →</button>
+        <button class="btn ghost" id="toPath">Voir mon parcours</button>
+      </div></div>`;
+    $("#nextLesson").onclick=()=>{ pathLesson=genLesson(); runLesson(); window.scrollTo({top:0,behavior:"smooth"}); };
+    $("#toPath").onclick=renderPath;
+  }
+  L.tasks.forEach((t,ti)=>{
+    const wrap=el("div","quiz-q");
+    if(t.type==="mcq"){
+      wrap.innerHTML=`<div class="q">${ti+1}. ${esc(t.prompt)} ${t.speak?spk(t.speak):""}</div>`;
+      const fb=el("div","feedback");
+      t.options.forEach((opt,oi)=>{
+        const b=el("button","opt",esc(opt));
+        b.onclick=()=>{
+          if(wrap.dataset.done)return; wrap.dataset.done="1"; answered++;
+          wrap.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+          if(oi===t.answer){ b.classList.add("correct"); correct++; if(t.skill===L.focus.key)focusCorrect++; fb.className="feedback show ok"; fb.textContent="✓ "+(t.why||"Correct !"); }
+          else { b.classList.add("wrong"); wrap.querySelectorAll(".opt")[t.answer].classList.add("correct"); fb.className="feedback show no"; fb.textContent="✗ "+(t.why||("Réponse : "+t.options[t.answer])); }
+          checkEnd();
+        };
+        wrap.appendChild(b);
+      });
+      wrap.appendChild(fb);
+    } else if(t.type==="order"){
+      wrap.innerHTML=`<div class="q">${ti+1}. Remets la phrase dans l'ordre ${spk(t.sentence)}</div>`;
+      const words=t.sentence.split(" "); let placed=[];
+      const target=el("div","builder-target"), bank=el("div","bank"), fb=el("div","feedback");
+      function draw(){
+        bank.innerHTML=""; target.innerHTML="";
+        shuffle(words.map((w,i)=>({w,i}))).forEach(o=>{ if(placed.includes(o.i))return; const cc=el("button","word-chip",esc(o.w)); cc.onclick=()=>{ if(wrap.dataset.done)return; placed.push(o.i); draw(); }; bank.appendChild(cc); });
+        placed.forEach((idx,pos)=>{ const cc=el("button","word-chip",esc(words[idx])); cc.onclick=()=>{ if(wrap.dataset.done)return; placed.splice(pos,1); draw(); }; target.appendChild(cc); });
+        if(!placed.length) target.innerHTML='<span style="color:var(--ink-soft);font-size:.85rem">Clique les mots pour construire la phrase…</span>';
+      }
+      const chk=el("button","btn accent small","Vérifier"); chk.style.marginTop="10px";
+      chk.onclick=()=>{ if(wrap.dataset.done)return; wrap.dataset.done="1"; answered++;
+        const attempt=placed.map(i=>words[i]).join(" ");
+        if(attempt===t.sentence){ correct++; fb.className="feedback show ok"; fb.textContent="✓ Parfait ! « "+t.sentence+". »"; speak(t.sentence); }
+        else { fb.className="feedback show no"; fb.textContent="✗ Ordre correct : « "+t.sentence+". »"; }
+        checkEnd();
+      };
+      wrap.appendChild(target); wrap.appendChild(bank); wrap.appendChild(chk); wrap.appendChild(fb);
+      draw();
+    }
+    box.appendChild(wrap);
+  });
+}
+
+/* boot */
+$("#streakN").textContent=state.streak;
+renderProfileBadge();
+renderHome();
+syncAllPending();
+requireEmail();
+/* suivi du temps & des sessions */
+state.sessions=(state.sessions||0)+1; save();
+setInterval(()=>{ if(document.visibilityState==="visible"){ state.appDaily[todayKey()]=(state.appDaily[todayKey()]||0)+5; save(); } }, 5000);
+setInterval(syncStats, 60000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") syncStatsBeacon(); });
+window.addEventListener("beforeunload", syncStatsBeacon);
+syncStats();
+</script>
